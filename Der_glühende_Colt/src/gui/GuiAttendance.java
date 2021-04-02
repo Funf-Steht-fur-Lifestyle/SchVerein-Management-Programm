@@ -1,4 +1,4 @@
-package gui;
+package colt.gui;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -21,16 +21,16 @@ public class GuiAttendance extends JFrame {
   // Anfang Attribute
   private JLabel lbAttendance = new JLabel();
   private JPanel pContent = new JPanel(null, true);
-    private JLabel lbDepartment = new JLabel();
+  private JLabel lbDepartment = new JLabel();
   private JTable tableAttendance = new JTable(5, 2);
-    @SuppressWarnings("unused")
-	private DefaultTableModel tableAttendanceModel = (DefaultTableModel) tableAttendance.getModel();
-    private JScrollPane tableAttendanceScrollPane = new JScrollPane(tableAttendance);
+  @SuppressWarnings("unused")
+  private DefaultTableModel tableAttendanceModel = (DefaultTableModel) tableAttendance.getModel();
+  private JScrollPane tableAttendanceScrollPane = new JScrollPane(tableAttendance);
   private JButton btnControl = new JButton();
   private JButton btnScale = new JButton();
   private JLabel lbDate = new JLabel();
   // Ende Attribute
-  
+
   public GuiAttendance() { 
     // Frame-Initialisierung
     super();
@@ -48,7 +48,7 @@ public class GuiAttendance extends JFrame {
     cp.setLayout(null);
     LocalDate currentDate = LocalDate.now();
     // Anfang Komponenten
-    
+
     lbAttendance.setBounds(223, 20, 124, 28);
     lbAttendance.setText("Anwesenheit");
     lbAttendance.setHorizontalAlignment(SwingConstants.CENTER);
@@ -89,20 +89,20 @@ public class GuiAttendance extends JFrame {
     lbDate.setFont(new Font("Dialog", Font.BOLD, 16));
     cp.add(lbDate);
     // Ende Komponenten
-    
+
     setVisible(true);
   } // end of public GuiAnwesenheit
-  
+
   // Anfang Methoden
-  
+
   public void btnControl_ActionPerformed(ActionEvent evt) {
     // TODO hier Quelltext einfügen
-    
+
   } // end of btnControl_ActionPerformed
 
   public void btnScale_ActionPerformed(ActionEvent evt) {
     // TODO hier Quelltext einfügen
-    
+
   } // end of btnScale_ActionPerformed
 
   // Ende Methoden

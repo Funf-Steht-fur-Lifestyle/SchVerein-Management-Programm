@@ -1,4 +1,4 @@
-package gui;
+package colt.gui;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -29,13 +29,13 @@ public class GuiDatabase extends JFrame {
   private JTextField tfSearch = new JTextField();
   private JButton btnSuchen = new JButton();
   private JTable tData = new JTable(5, 5);
-    private DefaultTableModel tmData = (DefaultTableModel) tData.getModel();
-    private JScrollPane tspScrollPane = new JScrollPane(tData);
+  private DefaultTableModel tmData = (DefaultTableModel) tData.getModel();
+  private JScrollPane tspScrollPane = new JScrollPane(tData);
   private JButton btnScale = new JButton();
   private JButton btnAttendance = new JButton();
   // Ende Attribute
-  
-  public GuiDatabase() { 
+
+  public GuiDatabase() {
     // Frame-Initialisierung
     super();
     setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
@@ -52,7 +52,7 @@ public class GuiDatabase extends JFrame {
     cp.setLayout(null);
     LocalDate currentDate = LocalDate.now();
     // Anfang Komponenten
-    
+
     lbHead.setBounds(32, 24, 324, 28);
     lbHead.setText("Schützenverein der glühende Colt");
     lbHead.setFont(new Font("Arial", Font.BOLD, 20));
@@ -78,7 +78,7 @@ public class GuiDatabase extends JFrame {
     btnAdd.setMargin(new Insets(2, 2, 2, 2));
     btnAdd.addActionListener(new ActionListener() { 
       public void actionPerformed(ActionEvent evt) { 
-    	  btnAdd_ActionPerformed(evt);
+          btnAdd_ActionPerformed(evt);
       }
     });
     cp.add(btnAdd);
@@ -87,7 +87,7 @@ public class GuiDatabase extends JFrame {
     btnDelete.setMargin(new Insets(2, 2, 2, 2));
     btnDelete.addActionListener(new ActionListener() { 
       public void actionPerformed(ActionEvent evt) { 
-    	  btnDelete_ActionPerformed(evt);
+          btnDelete_ActionPerformed(evt);
       }
     });
     cp.add(btnDelete);
@@ -114,7 +114,7 @@ public class GuiDatabase extends JFrame {
     btnScale.setMargin(new Insets(2, 2, 2, 2));
     btnScale.addActionListener(new ActionListener() { 
       public void actionPerformed(ActionEvent evt) { 
-    	  btnScale_ActionPerformed(evt);
+          btnScale_ActionPerformed(evt);
       }
     });
     cp.add(btnScale);
@@ -123,45 +123,46 @@ public class GuiDatabase extends JFrame {
     btnAttendance.setMargin(new Insets(2, 2, 2, 2));
     btnAttendance.addActionListener(new ActionListener() { 
       public void actionPerformed(ActionEvent evt) { 
-    	  btnAttendance_ActionPerformed(evt);
+          btnAttendance_ActionPerformed(evt);
       }
     });
     cp.add(btnAttendance);
     // Ende Komponenten
-    
+
     setVisible(true);
   } // end of public GuiSchützenvereinHome
-  
+
   // Anfang Methoden
-  
+
   public void btnEdit_ActionPerformed(ActionEvent evt) {
     // Hier muss eine Funktion rein, welche die Änderungen in der Datenbank speichert.
-    
+
   } // end of btnEdit_ActionPerformed
 
   public void btnAdd_ActionPerformed(ActionEvent evt) {
-	  // Hier muss eine Funktion rein, welche eine neue Zeile in der Tabelle hinzufügt.
+      // Hier muss eine Funktion rein, welche eine neue Zeile in der Tabelle hinzufügt.
+      FormStructure fs = new FormStructure();
   }
 
   public void btnDelete_ActionPerformed(ActionEvent evt) {
-	// Hier muss eine Funktion rein, zum Löschen einer Zeile
-	  
+    // Hier muss eine Funktion rein, zum Löschen einer Zeile
+      
   } // end of bLoeschen_ActionPerformed
 
   public void bSuchen_ActionPerformed(ActionEvent evt) {
     // Hier muss eine Funktion rein, welche das Suchen eines Begriffes in der Datenbank erlaubt.
     
-  } 
+  }
 
   public void btnScale_ActionPerformed(ActionEvent evt) {
     // Skalieren der Gui
     
-  } 
+  }
 
   public void btnAttendance_ActionPerformed(ActionEvent evt) {
-	  //Anwesenheit öffnen
-	  GuiAttendance attendanceScreen = new GuiAttendance();	
+      //Anwesenheit öffnen
+      GuiAttendance attendanceScreen = new GuiAttendance(); 
   }
 
   // Ende Methoden
-} 
+}

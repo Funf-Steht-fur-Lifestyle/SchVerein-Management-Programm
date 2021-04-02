@@ -1,9 +1,13 @@
-package gui;
+package colt.gui;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.util.*;
+
 import javax.swing.*;
 import javax.swing.event.*;
+
+import colt.*;
 
 /**
  *
@@ -23,11 +27,11 @@ public class GuiLogin extends JFrame {
   private JPasswordField pwdFieldPassword = new JPasswordField();
   private JButton btnLogin = new JButton();
   // Ende Attribute
-  
+
   public GuiLogin() { 
     // Frame-Initialisierung
     super();
-    
+
     setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
     int frameWidth = 606; 
     int frameHeight = 328;
@@ -40,71 +44,77 @@ public class GuiLogin extends JFrame {
     setResizable(false);
     Container cp = getContentPane();
     cp.setLayout(null);
-    
+
     // Anfang Komponenten
-    
+
     //Header
     lbHead.setBounds(135, 0, 323, 33);
     lbHead.setText("Schützenverein Der glühende Colt");
     lbHead.setFont(new Font("Arial Narrow", Font.BOLD, 24));
     cp.add(lbHead);
-    
+
     //Label für Benutzername
     lbUsername.setBounds(245, 85, 122, 23);
     lbUsername.setText("Benutzername:");
     cp.add(lbUsername);
-    
+
     //Textfeld für den Benutzernamen
     txtFieldUsername.setBounds(202, 104, 174, 28);
     txtFieldUsername.setHorizontalAlignment(SwingConstants.CENTER);
     cp.add(txtFieldUsername);
-    
+
     //Label für Passwort
     lbPassword.setBounds(260, 139, 82, 23);
     lbPassword.setText("Passwort:");
     cp.add(lbPassword);
-    
+
     //Passwortfeld für das Passwort
     pwdFieldPassword.setBounds(202, 160, 174, 28);
     pwdFieldPassword.setHorizontalAlignment(SwingConstants.CENTER);
     cp.add(pwdFieldPassword);
-    
+
     //Anmelde Knopf
     btnLogin.setBounds(245, 198, 91, 41);
     btnLogin.setText("Anmelden");
     btnLogin.setMargin(new Insets(2, 2, 2, 2));
-    
+
     //Methodenaufruf für das drücken des Knopfes
-    btnLogin.addActionListener(new ActionListener() { 
-      public void actionPerformed(ActionEvent evt) { 
+    btnLogin.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent evt) {
         buttonLogin_ActionPerformed(evt);
       }
     });
-    
+
     btnLogin.setFont(new Font("Dialog", Font.BOLD, 14));
     cp.add(btnLogin);
     // Ende Komponenten
-    
+    //
+
     setVisible(true);
   } // end of public GuiLogin
-  
+
   // Anfang Methoden
-  
+  //
+
   @SuppressWarnings("deprecation")
-public void buttonLogin_ActionPerformed(ActionEvent evt) {
+  public void buttonLogin_ActionPerformed(ActionEvent evt) {
     // TODO hier Quelltext einfügen
     String username = txtFieldUsername.getText();
     String password = pwdFieldPassword.getText();
-    String expectedUsername = "Reiner";
-    String expectedPassword = "Uludag123";
-    
-    if(username.equalsIgnoreCase(expectedUsername) && password.equals(expectedPassword)) {
-    	System.out.println("Anmeldung erfolgt!");
-    	this.hide();
-    	GuiDatabase homeScreen = new GuiDatabase();	
+
+    Database db = new Database();
+    ArrayList<String> user = db.selectUser();
+
+    String expectedUsername = user.get(0);
+    String expectedPassword = user.get(1);
+
+    if(username.equals(expectedUsername) && password.equals(expectedPassword)) {
+        System.out.println("Anmeldung erfolgt!");
+        this.hide();
+        GuiDatabase homeScreen = new GuiDatabase(); 
     }
     else {
-    	System.out.println("Du musst schon das richtige Passwort eingeben du kek!");
+        System.out.println("Du musst schon das richtige Passwort eingeben du kek!");
     }
   } // end of buttonLogin_ActionPerformed
 
