@@ -9,7 +9,6 @@ package colt;
  * @author Naglis Vidziunas
  */
 public class Address {
-
     protected String street;
     protected int houseNumber;
     protected String houseNumberAdditional;

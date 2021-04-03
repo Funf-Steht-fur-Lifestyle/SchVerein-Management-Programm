@@ -10,13 +10,13 @@ import java.util.*;
  * @author Naglis Vidziunas
  */
 public class MemberSearcher {
-    public ArrayList<String> search(String name) {
+    public ArrayList<String[]> search(String firstName, String lastName) {
         Database db = new Database();
-        ArrayList<String> result = new ArrayList<String>();
-        ArrayList<String> members = db.selectAllMitglieder();
+        ArrayList<String[]> result = new ArrayList<String[]>();
+        ArrayList<String[]> members = db.selectAllMitglieder();
 
-        for (String member : members) {
-            if (name.equals(member)) {
+        for (String[] member : members) {
+            if (member[0].equals(firstName) && member[1].equals(lastName)) {
                 result.add(member);
             }
         }

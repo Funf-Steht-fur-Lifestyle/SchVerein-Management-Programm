@@ -2,24 +2,25 @@ package colt.gui;
 
 import java.awt.*;
 import java.awt.event.*;
-import java.util.Date;
+import java.util.*;
 
 import javax.swing.*;
 import javax.swing.event.*;
 import javax.swing.table.*;
 import java.time.LocalDate;
 
+import colt.*;
+
 /**
  *
  * Beschreibung
  *
- * @version 1.0 vom 29.03.2021
- * @author 
+ * @version 1.0 for 29.03.2021
+ * @author David Stuirbrink, Naglis Vidziunas
  */
 
 @SuppressWarnings({ "unused", "serial" })
 public class GuiDatabase extends JFrame {
-  // Anfang Attribute
   private JLabel lbHead = new JLabel();
   private JLabel jLabel1 = new JLabel();
   private JLabel lbDatum = new JLabel();
@@ -28,15 +29,14 @@ public class GuiDatabase extends JFrame {
   private JButton btnDelete = new JButton();
   private JTextField tfSearch = new JTextField();
   private JButton btnSuchen = new JButton();
-  private JTable tData = new JTable(5, 5);
+  protected JTable tData = new JTable(0, 10);
   private DefaultTableModel tmData = (DefaultTableModel) tData.getModel();
   private JScrollPane tspScrollPane = new JScrollPane(tData);
   private JButton btnScale = new JButton();
   private JButton btnAttendance = new JButton();
-  // Ende Attribute
+  private Database db = new Database();
 
   public GuiDatabase() {
-    // Frame-Initialisierung
     super();
     setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
     int frameWidth = 1058; 
@@ -103,11 +103,16 @@ public class GuiDatabase extends JFrame {
     });
     cp.add(btnSuchen);
     tspScrollPane.setBounds(39, 167, 972, 446);
-    tData.getColumnModel().getColumn(0).setHeaderValue("Title 1");
-    tData.getColumnModel().getColumn(1).setHeaderValue("Title 2");
-    tData.getColumnModel().getColumn(2).setHeaderValue("Title 3");
-    tData.getColumnModel().getColumn(3).setHeaderValue("Title 4");
-    tData.getColumnModel().getColumn(4).setHeaderValue("Title 5");
+    tData.getColumnModel().getColumn(0).setHeaderValue("Vorname");
+    tData.getColumnModel().getColumn(1).setHeaderValue("Nachname");
+    tData.getColumnModel().getColumn(2).setHeaderValue("Geburtstag");
+    tData.getColumnModel().getColumn(3).setHeaderValue("IBAN");
+    tData.getColumnModel().getColumn(4).setHeaderValue("Geschlecht");
+    tData.getColumnModel().getColumn(5).setHeaderValue("Behinderungen");
+    tData.getColumnModel().getColumn(6).setHeaderValue("Vorstandsmitglied");
+    tData.getColumnModel().getColumn(7).setHeaderValue("Eintrittsdatum");
+    tData.getColumnModel().getColumn(8).setHeaderValue("Austrittsdatum");
+    tData.getColumnModel().getColumn(9).setHeaderValue("Vermerke");
     cp.add(tspScrollPane);
     btnScale.setBounds(960, 632, 75, 25);
     btnScale.setText("Vergrößern");
@@ -128,26 +133,51 @@ public class GuiDatabase extends JFrame {
     });
     cp.add(btnAttendance);
     // Ende Komponenten
+    //
+    setTablesData();
 
     setVisible(true);
   } // end of public GuiSchützenvereinHome
 
-  // Anfang Methoden
+  private void setTablesData() {
+    ArrayList<String[]> members = db.selectAllMitglieder();
+    String isBoardMember = "Nein";
+
+    for (String[] member : members) {
+      if (member[7].equals("1")) {
+        isBoardMember = "Ja";
+      }
+
+      tmData.addRow(new Object[]{
+        member[1], member[2], member[3], member[4], member[5],
+        member[6], isBoardMember, member[8], member[9], member[10]
+      });
+    }
+  }
 
   public void btnEdit_ActionPerformed(ActionEvent evt) {
-    // Hier muss eine Funktion rein, welche die Änderungen in der Datenbank speichert.
-
-  } // end of btnEdit_ActionPerformed
+    MemberEditForm form = new MemberEditForm(tData, tmData);
+  }
 
   public void btnAdd_ActionPerformed(ActionEvent evt) {
-      // Hier muss eine Funktion rein, welche eine neue Zeile in der Tabelle hinzufügt.
-      FormStructure fs = new FormStructure();
+    MemberAdditionForm form = new MemberAdditionForm(tmData);
   }
 
   public void btnDelete_ActionPerformed(ActionEvent evt) {
-    // Hier muss eine Funktion rein, zum Löschen einer Zeile
-      
-  } // end of bLoeschen_ActionPerformed
+    int row = tData.getSelectedRow();
+    String firstName = tmData.getValueAt(row, 0).toString();
+    String lastName = tmData.getValueAt(row, 1).toString();
+
+    Database db = new Database();
+    ArrayList<String[]> members = db.selectAllMitglieder();
+
+    for (String[] member : members) {
+      if (member[1].equals(firstName) && member[2].equals(lastName)) {
+        db.deleteMitglieder((int) Integer.valueOf(member[0]));
+        tmData.removeRow(row);
+      }
+    }
+  }
 
   public void bSuchen_ActionPerformed(ActionEvent evt) {
     // Hier muss eine Funktion rein, welche das Suchen eines Begriffes in der Datenbank erlaubt.

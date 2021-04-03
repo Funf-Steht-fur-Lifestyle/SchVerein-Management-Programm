@@ -8,16 +8,16 @@ package colt;
  * @author Naglis Vidziunas
  */
 public class Member {
-    protected String firstName;
-    protected String lastName;
-    protected String dateOfBirth;
-    protected String iban;
-    protected String sex;
-    protected String disabilities;
-    protected int boardMember;
-    protected String entranceDate;
-    protected String leavingDate;
-    protected String notes;
+    public String firstName;
+    public String lastName;
+    public String dateOfBirth;
+    public String iban;
+    public String sex;
+    public String disabilities;
+    public int boardMember;
+    public String entranceDate;
+    public String leavingDate;
+    public String notes;
 
     /**
      * Builder - a class that corresponds to the Member

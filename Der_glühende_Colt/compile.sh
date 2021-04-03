@@ -8,7 +8,7 @@ $JAVAC -version
 
 echo compile...
 
-$JAVAC -encoding cp1252 src/*.java src/gui/*.java
+$JAVAC -Xdiags:verbose -encoding cp1252 src/*.java src/gui/*.java
 mv src/gui/*.class bin/colt/gui/
 mv src/*.class bin/colt/
 

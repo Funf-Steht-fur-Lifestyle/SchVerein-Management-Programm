@@ -27,7 +27,7 @@ public class Database {
 
     public void insertUser(String username, String password) {
         String insertUserQuery = "INSERT INTO mitglieder(benutzername,"
-                                     + " passwort) VALUES(?,?)";
+                               + " passwort) VALUES(?,?)";
 
         try {
             Connection conn = connect();
@@ -77,13 +77,13 @@ public class Database {
         }
     }
 
-    public void insertMitglieder(Member member) {
+    public void insertMitglieder(Member member, int addressID) {
         String insertMitgliederQuery = "INSERT INTO mitglieder("
                                      + "vorname, nachname, geburtstag, IBAN,"
                                      + " geschlecht, behinderungen,"
                                      + " vorstandsmitglied, eintrittsdatum,"
-                                     + " austrittsdatum, vermerke)"
-                                     + " VALUES(?,?,?,?,?,?,?,?,?,?)";
+                                     + " austrittsdatum, vermerke, adresseID)"
+                                     + " VALUES(?,?,?,?,?,?,?,?,?,?,?)";
 
         try {
             Connection conn = connect();
@@ -99,42 +99,43 @@ public class Database {
             pStatement.setString(8, member.entranceDate);
             pStatement.setString(9, member.leavingDate);
             pStatement.setString(10, member.notes);
+            pStatement.setInt(11, addressID);
             pStatement.executeUpdate();
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
     }
 
-    public ArrayList<String> selectAllMitglieder() {
+    public ArrayList<String[]> selectAllMitglieder() {
         String selectMitgliederQuery = "SELECT * FROM mitglieder";
-        ArrayList<String> members = new ArrayList<String>();
+        ArrayList<String[]> members = new ArrayList<String[]>();
 
         try {
             Connection conn = connect();
             Statement statement = conn.createStatement();
             ResultSet rs = statement.executeQuery(selectMitgliederQuery);
+            int columnNumber = rs.getMetaData().getColumnCount();
 
             while (rs.next()) {
-                members.add(rs.getString(2));
-                members.add(rs.getString(3));
-                members.add(rs.getString(4));
-                members.add(rs.getString(5));
-                members.add(rs.getString(6));
-                members.add(rs.getString(7));
-                members.add(String.valueOf(rs.getInt(8)));
-                members.add(rs.getString(9));
-                members.add(rs.getString(10));
-                members.add(rs.getString(11));
+                String[] member = new String[columnNumber];
+
+                for (int i = 1; i < columnNumber; i++) {
+                    Object obj = rs.getObject(i);
+                    member[i - 1] = (obj == null) ? null : obj.toString();
+                }
+                System.out.println(member[11]);
+                members.add(member);
             }
         } catch (SQLException e) {
             System.out.println(e.getMessage());
+            e.printStackTrace();
         }
 
         return members;
     }
 
     public void updateMitglieder(Member member, int id) {
-        String updateMitgliederQuery = "UPDATE mitglieder SET name = ?, nachname = ?,"
+        String updateMitgliederQuery = "UPDATE mitglieder SET vorname = ?, nachname = ?,"
                                      + " geburtstag = ?, IBAN = ?, behinderungen = ?,"
                                      + " vorstandsmitglied = ?, eintrittsdatum = ?,"
                                      + " austrittsdatum = ?, vermerke = ?"
@@ -148,77 +149,87 @@ public class Database {
             pStatement.setString(2, member.lastName);
             pStatement.setString(3, member.dateOfBirth);
             pStatement.setString(4, member.iban);
-            pStatement.setString(6, member.disabilities);
-            pStatement.setInt(7, member.boardMember);
-            pStatement.setString(8, member.entranceDate);
-            pStatement.setString(9, member.leavingDate);
-            pStatement.setString(10, member.notes);
-            pStatement.setInt(11, id);
+            pStatement.setString(5, member.disabilities);
+            pStatement.setInt(6, member.boardMember);
+            pStatement.setString(7, member.entranceDate);
+            pStatement.setString(8, member.leavingDate);
+            pStatement.setString(9, member.notes);
+            pStatement.setInt(10, id);
             pStatement.executeUpdate();
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
     }
 
-    public void deleteMitglieder(Member member, int id) {
-        String deleteMitgliederQuery = "DELETE FROM mitglieder WHERE id = ?,"
-                                     + " name = ?, nachname = ?";
+    public void deleteMitglieder(int id) {
+        String deleteMitgliederQuery = "DELETE FROM mitglieder WHERE mitgliedernummer = ?";
 
         try {
             Connection conn = connect();
             PreparedStatement pStatement = conn.prepareStatement(deleteMitgliederQuery);
 
             pStatement.setInt(1, id);
-            pStatement.setString(2, member.firstName);
-            pStatement.setString(3, member.lastName);
             pStatement.executeUpdate();
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
     }
 
-    public void insertAdresse() {
+    public void insertAdresse(Address address) {
         String insertMitgliederQuery = "INSERT INTO adresse("
                                      + "Strasse, HN, HNZusatz, PLZ,"
-                                     + " Ort, Land, Bundesland"
-                                     + "VALUES(?,?,?,?,?,?,?)";
+                                     + " Ort, Land, Bundesland)"
+                                     + " VALUES(?,?,?,?,?,?,?)";
 
         try {
             Connection conn = connect();
             PreparedStatement pStatement = conn.prepareStatement(insertMitgliederQuery);
 
-            pStatement.setString(1, "Derig");
-            pStatement.setInt(2, 10);
-            pStatement.setString(3, "");
-            pStatement.setString(4, "55126");
-            pStatement.setString(5, "Mainz");
-            pStatement.setString(6, "Deutschland");
-            pStatement.setString(7, "RP");
+            pStatement.setString(1, address.street);
+            pStatement.setInt(2, address.houseNumber);
+            pStatement.setString(3, address.houseNumberAdditional);
+            pStatement.setInt(4, address.postcode);
+            pStatement.setString(5, address.location);
+            pStatement.setString(6, address.country);
+            pStatement.setString(7, address.state);
             pStatement.executeUpdate();
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
     }
 
-    public ArrayList<String> selectAllAdresse() {
+    public ArrayList<String[]> selectAllAdresse() {
         String selectMitgliederQuery = "SELECT * FROM adresse";
-        ArrayList<String> addresses = new ArrayList<String>();
+        ArrayList<String[]> addresses = new ArrayList<String[]>();
 
         try {
             Connection conn = connect();
             Statement statement = conn.createStatement();
             ResultSet rs = statement.executeQuery(selectMitgliederQuery);
 
+            int columnNumber = rs.getMetaData().getColumnCount();
+
             while (rs.next()) {
-                addresses.add(rs.getString(2));
-                addresses.add(String.valueOf(rs.getInt(3)));
-                addresses.add(rs.getString(4));
-                addresses.add(String.valueOf(rs.getInt(5)));
-                addresses.add(rs.getString(6));
-                addresses.add(rs.getString(7));
-                addresses.add(String.valueOf(rs.getInt(8)));
-                addresses.add(rs.getString(9));
+                String[] address = new String[columnNumber];
+
+                for (int i = 1; i < columnNumber; i++) {
+                    Object obj = rs.getObject(i);
+                    address[i - 1] = (obj == null) ? null:obj.toString();
+                }
+                addresses.add(address);
             }
+
+            // while (rs.next()) {
+            //     addresses.add(rs.getString(2));
+            //     addresses.add(String.valueOf(rs.getInt(3)));
+            //     addresses.add(rs.getString(4));
+            //     addresses.add(String.valueOf(rs.getInt(5)));
+            //     addresses.add(rs.getString(6));
+            //     addresses.add(rs.getString(7));
+            //     addresses.add(rs.getString(8));
+
+            //     
+            // }
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
@@ -250,11 +261,11 @@ public class Database {
     }
 
     public void deleteAdresse(int id) {
-        String deleteMitgliederQuery = "DELETE FROM adresse WHERE addressID = ?";
+        String deleteAdresseQuery = "DELETE FROM adresse WHERE addressID = ?";
 
         try {
             Connection conn = connect();
-            PreparedStatement pStatement = conn.prepareStatement(deleteMitgliederQuery);
+            PreparedStatement pStatement = conn.prepareStatement(deleteAdresseQuery);
 
             pStatement.setInt(1, id);
             pStatement.executeUpdate();
