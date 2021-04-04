@@ -14,28 +14,28 @@ import javax.crypto.spec.*;
  * @author Naglis Vidziunas
  */
 public class PasswordHashing {
-    private byte[] createSalt() {
-        SecureRandom random = new SecureRandom();
-        byte[] salt = new byte[16];
-        random.nextBytes(salt);
+  private byte[] createSalt() {
+    SecureRandom random = new SecureRandom();
+    byte[] salt = new byte[16];
+    random.nextBytes(salt);
 
-        return salt;
+    return salt;
+  }
+
+  public byte[] hash(String password) {
+    byte[] salt = createSalt();
+    KeySpec spec = new PBEKeySpec(password.toCharArray(), salt, 65536, 128);
+    byte[] hashedPassword = null;
+
+    try {
+      SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
+      hashedPassword = factory.generateSecret(spec).getEncoded();
+    } catch (NoSuchAlgorithmException e) {
+      System.out.println(e.getMessage());
+    } catch (InvalidKeySpecException ex) {
+      System.out.println(ex.getMessage());
     }
 
-    public byte[] hash(String password) {
-        byte[] salt = createSalt();
-        KeySpec spec = new PBEKeySpec(password.toCharArray(), salt, 65536, 128);
-        byte[] hashedPassword = null;
-
-        try {
-            SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
-            hashedPassword = factory.generateSecret(spec).getEncoded();
-        } catch (NoSuchAlgorithmException e) {
-            System.out.println(e.getMessage());
-        } catch (InvalidKeySpecException ex) {
-            System.out.println(ex.getMessage());
-        }
-
-        return hashedPassword;
-    }
+    return hashedPassword;
+  }
 }

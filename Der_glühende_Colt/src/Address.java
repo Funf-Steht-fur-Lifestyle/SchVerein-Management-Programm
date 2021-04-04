@@ -9,66 +9,66 @@ package colt;
  * @author Naglis Vidziunas
  */
 public class Address {
-    public String street;
-    public int houseNumber;
-    public String houseNumberAdditional;
-    public int postcode;
-    public String location;
-    public String country;
-    public String state;
+  public String street;
+  public int houseNumber;
+  public String houseNumberAdditional;
+  public int postcode;
+  public String location;
+  public String country;
+  public String state;
 
-    /**
-     * Builder - a class that corresponds to the Address
-     * class. It helps to create an Address entry object
-     * given required values, such as street, house number,
-     * postcode, and so on.
-     *
-     * @version 1.0 from 02.04.2021
-     * @author Naglis Vidziunas
-     */
-    public static class Builder {
-        Address address = new Address();
+  /**
+   * Builder - a class that corresponds to the Address
+   * class. It helps to create an Address entry object
+   * given required values, such as street, house number,
+   * postcode, and so on.
+   *
+   * @version 1.0 from 02.04.2021
+   * @author Naglis Vidziunas
+   */
+  public static class Builder {
+    Address address = new Address();
 
-        public Builder() {}
+    public Builder() {}
 
-        public Builder street(String street) {
-            address.street = street;
-            return this;
-        }
-
-        public Builder houseNumber(int houseNumber) {
-            address.houseNumber = houseNumber;
-            return this;
-        }
-
-        public Builder houseNumberAdditional(String houseNumberAdditional) {
-            address.houseNumberAdditional = houseNumberAdditional;
-            return this;
-        }
-
-        public Builder postcode(int postcode) {
-            address.postcode = postcode;
-            return this;
-        }
-
-        public Builder location(String location) {
-            address.location = location;
-            return this;
-        }
-
-        public Builder country(String country) {
-            address.country = country;
-            return this;
-        }
-
-        public Builder state(String state) {
-            address.state = state;
-            return this;
-        }
-
-        public Address build() {
-            return address;
-        }
+    public Builder street(String street) {
+      address.street = street;
+      return this;
     }
+
+    public Builder houseNumber(int houseNumber) {
+      address.houseNumber = houseNumber;
+      return this;
+    }
+
+    public Builder houseNumberAdditional(String houseNumberAdditional) {
+      address.houseNumberAdditional = houseNumberAdditional;
+      return this;
+    }
+
+    public Builder postcode(int postcode) {
+      address.postcode = postcode;
+      return this;
+    }
+
+    public Builder location(String location) {
+      address.location = location;
+      return this;
+    }
+
+    public Builder country(String country) {
+      address.country = country;
+      return this;
+    }
+
+    public Builder state(String state) {
+      address.state = state;
+      return this;
+    }
+
+    public Address build() {
+      return address;
+    }
+  }
 }
 

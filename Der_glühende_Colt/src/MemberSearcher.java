@@ -15,31 +15,31 @@ import colt.*;
  * @author Naglis Vidziunas
  */
 public class MemberSearcher {
-    private DefaultTableModel tmData;
+  private DefaultTableModel tmData;
 
-    public MemberSearcher(DefaultTableModel tmData) {
-        this.tmData = tmData;
-    }
+  public MemberSearcher(DefaultTableModel tmData) {
+    this.tmData = tmData;
+  }
 
-    public void search(JTextField tfSearch) {
-        int rows = tmData.getRowCount();
+  public void search(JTextField tfSearch) {
+    int rows = tmData.getRowCount();
 
-        if (!tfSearch.getText().equals("")) {
-            String searchValue = tfSearch.getText();
-            String[] searchedPerson = searchValue.split(" ");
-            String firstName = searchedPerson[0];
-            String lastName = searchedPerson[1];
+    if (!tfSearch.getText().equals("")) {
+      String searchValue = tfSearch.getText();
+      String[] searchedPerson = searchValue.split(" ");
+      String firstName = searchedPerson[0];
+      String lastName = searchedPerson[1];
 
-            for (int i = 0; i < rows; i++) {
-                String rowFirstName = tmData.getValueAt(i, 0).toString();
-                String rowLastName = tmData.getValueAt(i, 1).toString();
+      for (int i = 0; i < rows; i++) {
+        String rowFirstName = tmData.getValueAt(i, 0).toString();
+        String rowLastName = tmData.getValueAt(i, 1).toString();
 
-                if (!rowFirstName.equals(firstName) && !rowLastName.equals(lastName)) {
-                    tmData.removeRow(i);
-                    rows = tmData.getRowCount();
-                    i = 0;
-                }
-            }
+        if (!rowFirstName.equals(firstName) && !rowLastName.equals(lastName)) {
+          tmData.removeRow(i);
+          rows = tmData.getRowCount();
+          i = 0;
         }
+      }
     }
+  }
 }
