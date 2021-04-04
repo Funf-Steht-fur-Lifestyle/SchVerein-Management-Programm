@@ -3,17 +3,20 @@ package colt.gui;
 import java.awt.*;
 import java.awt.event.*;
 import java.time.LocalDate;
+import java.util.*;
 
 import javax.swing.*;
 import javax.swing.event.*;
 import javax.swing.table.*;
+
+import colt.*;
 
 /**
  *
  * Beschreibung
  *
  * @version 1.0 vom 30.03.2021
- * @author 
+ * @author David Stuirbrink, Naglis Vidziunas
  */
 
 @SuppressWarnings({ "serial", "unused" })
@@ -22,12 +25,14 @@ public class GuiAttendance extends JFrame {
   private JLabel lbAttendance = new JLabel();
   private JPanel pContent = new JPanel(null, true);
   private JLabel lbDepartment = new JLabel();
-  private JTable tableAttendance = new JTable(5, 2);
+  private JTable tableAttendance = new JTable(0, 2);
   @SuppressWarnings("unused")
   private DefaultTableModel tableAttendanceModel = (DefaultTableModel) tableAttendance.getModel();
   private JScrollPane tableAttendanceScrollPane = new JScrollPane(tableAttendance);
   private JButton btnControl = new JButton();
   private JButton btnScale = new JButton();
+  private JButton btnAddNewRow = new JButton();
+  private JButton btnDelete = new JButton();
   private JLabel lbDate = new JLabel();
   // Ende Attribute
 
@@ -65,7 +70,7 @@ public class GuiAttendance extends JFrame {
     tableAttendance.getColumnModel().getColumn(0).setHeaderValue("Mitgliedsname");
     tableAttendance.getColumnModel().getColumn(1).setHeaderValue("Anwesenheit");
     pContent.add(tableAttendanceScrollPane);
-    btnControl.setBounds(347, 329, 107, 25);
+    btnControl.setBounds(177, 329, 107, 25);
     btnControl.setText("Kontrolliert");
     btnControl.setMargin(new Insets(2, 2, 2, 2));
     btnControl.addActionListener(new ActionListener() { 
@@ -75,6 +80,24 @@ public class GuiAttendance extends JFrame {
     });
     btnControl.setFont(new Font("Dialog", Font.BOLD, 16));
     cp.add(btnControl);
+    btnAddNewRow.setBounds(350, 329, 107, 25);
+    btnAddNewRow.setText("Neue Reihe");
+    btnAddNewRow.setMargin(new Insets(2, 2, 2, 2));
+    btnAddNewRow.addActionListener(new ActionListener() { 
+      public void actionPerformed(ActionEvent evt) { 
+        btnAddNewRow_ActionPerformed(evt);
+      }
+    });
+    cp.add(btnAddNewRow);
+    btnDelete.setBounds(512, 329, 107, 25);
+    btnDelete.setText("Löschen");
+    btnDelete.setMargin(new Insets(2, 2, 2, 2));
+    btnDelete.addActionListener(new ActionListener() { 
+      public void actionPerformed(ActionEvent evt) { 
+        btnDelete_ActionPerformed(evt);
+      }
+    });
+    cp.add(btnDelete);
     btnScale.setBounds(622, 359, 75, 25);
     btnScale.setText("Vergrößern");
     btnScale.setMargin(new Insets(2, 2, 2, 2));
@@ -89,16 +112,46 @@ public class GuiAttendance extends JFrame {
     lbDate.setFont(new Font("Dialog", Font.BOLD, 16));
     cp.add(lbDate);
     // Ende Komponenten
+    listPresent();
 
     setVisible(true);
   } // end of public GuiAnwesenheit
 
   // Anfang Methoden
+  //
+  private void listPresent() {
+    Database db = new Database();
+    ArrayList<String[]> presentMembers = db.selectAllPresent();
+    ArrayList<String[]> members = db.selectAllMitglieder();
+
+    for (String[] presentMember : presentMembers) {
+      for (String[] member : members) {
+        if (presentMember[0].equals(member[0])) {
+          String fullName = member[1] + " " + member[2];
+
+          tableAttendanceModel.addRow(new Object[]{
+            fullName, presentMember[1]
+          });
+        }
+      }
+    }
+  }
 
   public void btnControl_ActionPerformed(ActionEvent evt) {
-    // TODO hier Quelltext einfügen
+    AttendanceMarker attendanceMarker = new AttendanceMarker(tableAttendanceModel, tableAttendance);
+    attendanceMarker.markAsAttended();
+  }
 
-  } // end of btnControl_ActionPerformed
+  public void btnAddNewRow_ActionPerformed(ActionEvent evt) {
+    tableAttendanceModel.addRow(new Object[]{
+      null, null
+    });
+  }
+
+  public void btnDelete_ActionPerformed(ActionEvent evt) {
+    AttendanceMarker attendanceMarker = new AttendanceMarker(tableAttendanceModel, tableAttendance);
+    attendanceMarker.unmarkAsAttended();
+  }
 
   public void btnScale_ActionPerformed(ActionEvent evt) {
     // TODO hier Quelltext einfügen

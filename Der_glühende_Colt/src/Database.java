@@ -277,4 +277,45 @@ public class Database {
             System.out.println(e.getMessage());
         }
     }
+
+    public ArrayList<String[]> selectAllPresent() {
+        String selectPresentQuery = "SELECT * FROM anwesenheit JOIN mitglieder USING (mitgliedernummer)";
+        ArrayList<String[]> presentMembers = new ArrayList<String[]>();
+
+        try {
+            Connection conn = connect();
+            Statement statement = conn.createStatement();
+            ResultSet rs = statement.executeQuery(selectPresentQuery);
+            int columnNumber = rs.getMetaData().getColumnCount();
+
+            while (rs.next()) {
+                String[] presentMember = new String[columnNumber];
+
+                for (int i = 1; i < columnNumber; i++) {
+                    Object obj = rs.getObject(i);
+                    presentMember[i - 1] = (obj == null) ? null : obj.toString();
+                }
+                presentMembers.add(presentMember);
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+
+        return presentMembers;
+    }
+
+    public void deletePresent(int memberID, String date) {
+        String deletePresentQuery = "DELETE FROM anwesenheit WHERE mitgliedernummer = ? AND andatum = ?";
+
+        try {
+            Connection conn = connect();
+            PreparedStatement pStatement = conn.prepareStatement(deletePresentQuery);
+
+            pStatement.setInt(1, memberID);
+            pStatement.setString(2, date);
+            pStatement.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
 }
