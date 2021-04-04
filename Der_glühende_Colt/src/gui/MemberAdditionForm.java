@@ -45,6 +45,7 @@ public class MemberAdditionForm extends JFrame {
 
     private final int gapSize = 10;
     private DefaultTableModel tmData;
+    private Database db = new Database();
 
     public MemberAdditionForm() {
         setTitle("Hinzufügen");
@@ -222,7 +223,6 @@ public class MemberAdditionForm extends JFrame {
         String sex = getSex();
         int boardMember = isBoardMember();
 
-        MemberSearcher searcher = new MemberSearcher();
         Member member = new Member.Builder()
                                   .firstName(firstName)
                                   .lastName(lastName)
@@ -251,7 +251,7 @@ public class MemberAdditionForm extends JFrame {
         });
     }
 
-    private Address getAddressData() {
+    protected Address getAddressData() {
         String street = txtFieldStreet.getText();
         int houseNumber = Integer.parseInt(txtFieldHouseNumber.getText());
         String houseNumberAdditional = txtFieldHouseNumberAdditional.getText();
@@ -307,9 +307,15 @@ public class MemberAdditionForm extends JFrame {
         });
     }
 
-    protected void btnAdd_ActionPerformed(ActionEvent evt) {
-        Database db = new Database();
+    private int getAddressID() {
+        ArrayList<String[]> addresses = db.selectAllAdresse();
+        String[] address = addresses.get(addresses.size() - 1);
+        int addressID = Integer.valueOf(address[0]);
 
+        return addressID;
+    }
+
+    protected void btnAdd_ActionPerformed(ActionEvent evt) {
         if (!isAllRequiredTxtFieldsFilled()) {
             showWarningMsg("Sie müssen alle erforderliche Felder ausfüllen.");
         } else {
@@ -319,10 +325,8 @@ public class MemberAdditionForm extends JFrame {
             Address address = getAddressData();
             db.insertAdresse(address);
 
-            ArrayList<String[]> addresses = db.selectAllAdresse();
-            String[] addres = addresses.get(addresses.size() - 1);
-
-            db.insertMitglieder(member, (int) Integer.valueOf(addres[0]));
+            int addressID = getAddressID();
+            db.insertMitglieder(member, addressID);
         }
     }
 }

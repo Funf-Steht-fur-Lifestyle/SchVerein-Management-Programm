@@ -22,6 +22,7 @@ public class MemberEditForm extends MemberAdditionForm {
     private String memberID;
     private DefaultTableModel tmData;
     private JTable tData;
+    private String addressID;
 
     public MemberEditForm(JTable tData, DefaultTableModel tmData) {
         setTitle("Bearbeiten");
@@ -51,10 +52,10 @@ public class MemberEditForm extends MemberAdditionForm {
             if (member[1].equals(firstName) && member[2].equals(lastName)) {
                 memberID = member[0];
 
-                String addressID = member[11];
-                System.out.println("ADDRESS: " + addressID);
+                addressID = member[11];
 
                 for (String[] address : addresses) {
+
                     if (address[0].equals(addressID)) {
                         txtFieldStreet.setText(address[1]);
                         txtFieldHouseNumber.setText(address[2]);
@@ -130,8 +131,8 @@ public class MemberEditForm extends MemberAdditionForm {
             insertMembersDataToTable(member);
             db.updateMitglieder(member, Integer.valueOf(memberID));
 
-            // Address address = getAddressData();
-            // db.updateAdresse(address);
+            Address address = getAddressData();
+            db.updateAdresse(address, (int) Integer.valueOf(addressID));
         }
     }
 }

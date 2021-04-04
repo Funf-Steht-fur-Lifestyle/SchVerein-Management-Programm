@@ -17,6 +17,7 @@ public class Database {
         try {
             Class.forName("org.sqlite.JDBC");
             conn = DriverManager.getConnection("jdbc:sqlite:data.db");
+            conn.createStatement().execute("PRAGMA foreign_keys = ON");
         } catch (Exception e) {
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
             System.exit(0);
@@ -107,7 +108,7 @@ public class Database {
     }
 
     public ArrayList<String[]> selectAllMitglieder() {
-        String selectMitgliederQuery = "SELECT * FROM mitglieder";
+        String selectMitgliederQuery = "SELECT * FROM mitglieder JOIN adresse USING (adresseID)";
         ArrayList<String[]> members = new ArrayList<String[]>();
 
         try {
@@ -123,12 +124,10 @@ public class Database {
                     Object obj = rs.getObject(i);
                     member[i - 1] = (obj == null) ? null : obj.toString();
                 }
-                System.out.println(member[11]);
                 members.add(member);
             }
         } catch (SQLException e) {
             System.out.println(e.getMessage());
-            e.printStackTrace();
         }
 
         return members;
@@ -199,7 +198,7 @@ public class Database {
     }
 
     public ArrayList<String[]> selectAllAdresse() {
-        String selectMitgliederQuery = "SELECT * FROM adresse";
+        String selectMitgliederQuery = "SELECT * FROM adresse JOIN mitglieder USING (adresseID)";
         ArrayList<String[]> addresses = new ArrayList<String[]>();
 
         try {
@@ -214,22 +213,11 @@ public class Database {
 
                 for (int i = 1; i < columnNumber; i++) {
                     Object obj = rs.getObject(i);
-                    address[i - 1] = (obj == null) ? null:obj.toString();
+                    address[i - 1] = (obj == null) ? null : obj.toString();
                 }
+
                 addresses.add(address);
             }
-
-            // while (rs.next()) {
-            //     addresses.add(rs.getString(2));
-            //     addresses.add(String.valueOf(rs.getInt(3)));
-            //     addresses.add(rs.getString(4));
-            //     addresses.add(String.valueOf(rs.getInt(5)));
-            //     addresses.add(rs.getString(6));
-            //     addresses.add(rs.getString(7));
-            //     addresses.add(rs.getString(8));
-
-            //     
-            // }
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
@@ -237,10 +225,10 @@ public class Database {
         return addresses;
     }
 
-    public void updateAdresse(Address address, int id) {
-        String updateMitgliederQuery = "UPDATE mitglieder SET Strasse = ?, HN = ?,"
+    public void updateAdresse(Address address, int addressID) {
+        String updateMitgliederQuery = "UPDATE adresse SET Strasse = ?, HN = ?,"
                                      + " HNZusatz = ?, PLZ = ?, Ort = ?, Land = ?,"
-                                     + " Bundesland = ? WHER adresseID = ?";
+                                     + " Bundesland = ? WHERE adresseID = ?";
 
         try {
             Connection conn = connect();
@@ -253,7 +241,7 @@ public class Database {
             pStatement.setString(5, address.location);
             pStatement.setString(6, address.country);
             pStatement.setString(7, address.state);
-            pStatement.setInt(8, 1);
+            pStatement.setInt(8, addressID);
             pStatement.executeUpdate();
         } catch (SQLException e) {
             System.out.println(e.getMessage());

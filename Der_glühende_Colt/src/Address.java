@@ -9,13 +9,13 @@ package colt;
  * @author Naglis Vidziunas
  */
 public class Address {
-    protected String street;
-    protected int houseNumber;
-    protected String houseNumberAdditional;
-    protected int postcode;
-    protected String location;
-    protected String country;
-    protected String state;
+    public String street;
+    public int houseNumber;
+    public String houseNumberAdditional;
+    public int postcode;
+    public String location;
+    public String country;
+    public String state;
 
     /**
      * Builder - a class that corresponds to the Address

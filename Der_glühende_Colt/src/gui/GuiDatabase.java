@@ -65,7 +65,7 @@ public class GuiDatabase extends JFrame {
     lbDatum.setFont(new Font("Dialog", Font.BOLD, 14));
     cp.add(lbDatum);
     btnEdit.setBounds(529, 135, 75, 25);
-    btnEdit.setText("Speichern");
+    btnEdit.setText("Bearbeiten");
     btnEdit.setMargin(new Insets(2, 2, 2, 2));
     btnEdit.addActionListener(new ActionListener() { 
       public void actionPerformed(ActionEvent evt) { 
@@ -179,9 +179,22 @@ public class GuiDatabase extends JFrame {
     }
   }
 
+  int searchedTimes = 0;
+
   public void bSuchen_ActionPerformed(ActionEvent evt) {
-    // Hier muss eine Funktion rein, welche das Suchen eines Begriffes in der Datenbank erlaubt.
-    
+    MemberSearcher searcher = new MemberSearcher(tmData);
+    searcher.search(tfSearch);
+
+    searchedTimes++;
+
+    if (searchedTimes % 2 == 0) {
+      int rows = tmData.getRowCount();
+      for (int i = 0; i < rows; i++) {
+        tmData.removeRow(i);
+      }
+
+      setTablesData();
+    }
   }
 
   public void btnScale_ActionPerformed(ActionEvent evt) {
