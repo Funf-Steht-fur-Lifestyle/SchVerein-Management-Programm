@@ -1,15 +1,17 @@
 #!/bin/bash -e
 
 echo ================================
-date
 JAVAC=javac
+SRC=src/java/colt
+
+date
+
 which $JAVAC
 $JAVAC -version
 
 echo compile...
 
-$JAVAC -Xdiags:verbose -encoding cp1252 src/*.java src/gui/*.java
-mv src/gui/*.class bin/colt/gui/
-mv src/*.class bin/colt/
-
+$JAVAC -Xdiags:verbose -encoding cp1252 $SRC/*.java $SRC/gui/*.java
+mv $SRC/gui/*.class bin/colt/gui/
+mv $SRC/*.class bin/colt/
 echo ================================
