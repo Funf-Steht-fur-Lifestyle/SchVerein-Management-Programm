@@ -49,7 +49,7 @@ public class GuiLogin extends JFrame {
     Container cp = getContentPane();
     cp.setLayout(null);
 
-    lbHead.setBounds(135, 0, 323, 33);
+    lbHead.setBounds(80, 0, 500, 33);
     lbHead.setText("Schützenverein Der glühende Colt");
     lbHead.setFont(new Font("Arial Narrow", Font.BOLD, 24));
     cp.add(lbHead);
@@ -70,7 +70,7 @@ public class GuiLogin extends JFrame {
     pwdFieldPassword.setHorizontalAlignment(SwingConstants.CENTER);
     cp.add(pwdFieldPassword);
 
-    btnLogin.setBounds(145, 198, 91, 41);
+    btnLogin.setBounds(160, 198, 120, 41);
     btnLogin.setText("Anmelden");
     btnLogin.setMargin(new Insets(2, 2, 2, 2));
     btnLogin.addActionListener(new ActionListener() {
@@ -81,7 +81,7 @@ public class GuiLogin extends JFrame {
     btnLogin.setFont(new Font("Dialog", Font.BOLD, 14));
     cp.add(btnLogin);
 
-    btnRegister.setBounds(245, 198, 91, 41);
+    btnRegister.setBounds(290, 198, 120, 41);
     btnRegister.setText("Registrieren");
     btnRegister.setMargin(new Insets(2, 2, 2, 2));
     btnRegister.addActionListener(new ActionListener() {
@@ -118,8 +118,6 @@ public class GuiLogin extends JFrame {
     PasswordHashing passHashing = new PasswordHashing();
     String hashedPassword = passHashing.hash(password);
     boolean passwordsEqual = false;
-    System.out.println(hashedPassword);
-    System.out.println(expectedPassword);
 
     try {
       passwordsEqual = passHashing.validate(password, expectedPassword);

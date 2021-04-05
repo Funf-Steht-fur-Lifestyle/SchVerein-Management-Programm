@@ -188,12 +188,10 @@ public class GuiDatabase extends JFrame {
     searchedTimes++;
 
     if (searchedTimes % 2 == 0) {
-      int rows = tmData.getRowCount();
-      for (int i = 0; i < rows; i++) {
-        tmData.removeRow(i);
-      }
+      tmData.getDataVector().removeAllElements();
 
       setTablesData();
+      searcher.search(tfSearch);
     }
   }
 

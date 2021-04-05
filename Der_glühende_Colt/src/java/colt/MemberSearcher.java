@@ -16,28 +16,71 @@ import colt.*;
  */
 public class MemberSearcher {
   private DefaultTableModel tmData;
+  private Database db = new Database();
 
   public MemberSearcher(DefaultTableModel tmData) {
     this.tmData = tmData;
+  }
+
+  private boolean tableContainsMember(String firstName, String lastName) {
+    int rows = tmData.getRowCount();
+    int columns = tmData.getColumnCount();
+
+    for (int row = 0; row < rows; row++) {
+        String rowFirstName = (tmData.getValueAt(row, 0) == null) ? ""
+                            : tmData.getValueAt(row, 0).toString().toLowerCase();
+        String rowLastName = (tmData.getValueAt(row, 1) == null) ? ""
+                           : tmData.getValueAt(row, 1).toString().toLowerCase();
+
+        if(rowFirstName.contains(firstName.toLowerCase())
+            && rowLastName.contains(lastName.toLowerCase())
+        ) {
+          return true;
+        }
+    }
+
+    return false;
   }
 
   public void search(JTextField tfSearch) {
     int rows = tmData.getRowCount();
 
     if (!tfSearch.getText().equals("")) {
-      String searchValue = tfSearch.getText();
-      String[] searchedPerson = searchValue.split(" ");
-      String firstName = searchedPerson[0];
-      String lastName = searchedPerson[1];
+      String searchValue = tfSearch.getText() + " ";
+      String[] search = searchValue.split(" ");
+      ArrayList<String[]> members = db.selectAllMitglieder();
 
-      for (int i = 0; i < rows; i++) {
-        String rowFirstName = tmData.getValueAt(i, 0).toString();
-        String rowLastName = tmData.getValueAt(i, 1).toString();
+      tmData.getDataVector().removeAllElements();
+      boolean equal = false;
 
-        if (!rowFirstName.equals(firstName) && !rowLastName.equals(lastName)) {
-          tmData.removeRow(i);
-          rows = tmData.getRowCount();
-          i = 0;
+      for (String[] member : members) {
+        for (int i = 0; i < member.length; i++) {
+          String value = (member[i] == null) ? "" : member[i].toLowerCase();
+          String firstName = (member[1] == null) ? "" : member[1];
+          String lastName = (member[2] == null) ? "" : member[2];
+          boolean contains = tableContainsMember(firstName, lastName);
+
+          for (int j = 0; j < search.length; j++) {
+            String data = (search[j] == null) ? "" : search[j];
+            String keyword = search[j].toLowerCase();
+
+            if (value == null) {
+              continue;
+            }
+
+            if (value.equals(keyword) && !contains) {
+              String isBoardMember = "Nein";
+
+              if (value.equals("1")) {
+                isBoardMember = "Ja";
+              }
+
+              tmData.addRow(new Object[]{
+                member[1], member[2], member[3], member[4], member[5],
+                member[6], isBoardMember, member[8], member[9], member[10]
+              });
+            }
+          }
         }
       }
     }

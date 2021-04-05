@@ -107,10 +107,6 @@ public class MemberAdditionForm extends JFrame {
     allowOnlyNumbers(txtFieldHouseNumber);
     allowOnlyNumbers(txtFieldPostcode);
 
-    validateDateFormat(txtFieldDateOfBirth);
-    validateDateFormat(txtFieldEntranceDate);
-    validateDateFormat(txtFieldLeavingDate);
-
     add(westPanel, BorderLayout.WEST);
     add(eastPanel, BorderLayout.EAST);
     add(southPanel, BorderLayout.SOUTH);
@@ -311,30 +307,6 @@ public class MemberAdditionForm extends JFrame {
         }
       }
     });
-  }
-
-  private void validateDateFormat(JFormattedTextField txtFieldDate) {
-    // txtFieldDate.addKeyListener(new KeyAdapter() {
-    //   public void keyPressed(KeyEvent ke) {
-    //     if (ke.getKeyChar() >= '0' && ke.getKeyChar() <= '9'
-    //         || ke.getKeyCode() == KeyEvent.VK_BACK_SPACE
-    //         || ke.getKeyCode() == KeyEvent.VK_DELETE
-    //         || ke.getKeyCode() == KeyEvent.VK_SLASH
-    //         && ke.getKeyCode() == KeyEvent.VK_SHIFT)
-    //     {
-    //       txtFieldDate.setEditable(true);
-    //     } else {
-    //       txtFieldDate.setEditable(false);
-    //       showWarningMsg("Bitte geben Sie Datum in die richtige Format: dd/MM/yyyy");
-    //       txtFieldDate.setEditable(true);
-    //     }
-    //   }
-    // });
-    // String date = txtFieldDate.getText();
-
-    // if (!date.matches("\\d{2}\\/\\d{2}\\/\\d{4}")) {
-    //   showWarningMsg("Bitte geben Sie Datum in die richtige Format: dd/MM/yyyy");
-    // }
   }
 
   private int getAddressID() {
