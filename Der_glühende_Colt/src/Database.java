@@ -27,7 +27,7 @@ public class Database {
   }
 
   public void insertUser(String username, String password) {
-    String insertUserQuery = "INSERT INTO mitglieder(benutzername,"
+    String insertUserQuery = "INSERT INTO benutzer(benutzername,"
                            + " passwort) VALUES(?,?)";
 
     try {
@@ -42,24 +42,30 @@ public class Database {
     }
   }
 
-  public ArrayList<String> selectUser() {
-    String selectUserQuery = "SELECT * FROM benutzer";
-    ArrayList<String> user = new ArrayList<String>();
+  public ArrayList<String[]> selectUser() {
+    String selectUserQuery = "SELECT * FROM benutzer JOIN mitglieder";
+    ArrayList<String[]> users = new ArrayList<String[]>();
 
     try {
       Connection conn = connect();
       Statement statement = conn.createStatement();
       ResultSet rs = statement.executeQuery(selectUserQuery);
+      int columnNumber = rs.getMetaData().getColumnCount();
 
       while (rs.next()) {
-        user.add(rs.getString(2));
-        user.add(rs.getString(3));
+        String[] user = new String[columnNumber];
+
+        for (int i = 1; i < columnNumber; i++) {
+          Object obj = rs.getObject(i);
+          user[i - 1] = (obj == null) ? null : obj.toString();
+        }
+        users.add(user);
       }
     } catch (SQLException e) {
       System.out.println(e.getMessage());
     }
 
-    return user;
+    return users;
   }
 
   public void updateUserInfo(String username, String password, int id) {

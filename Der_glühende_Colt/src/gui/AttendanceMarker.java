@@ -84,6 +84,12 @@ public class AttendanceMarker {
                       : tmAttendance.getValueAt(i, 0).toString();
       String date = (tmAttendance.getValueAt(i, 1) == null) ? ""
                   : tmAttendance.getValueAt(i, 1).toString();
+
+      if (!date.matches("\\d{2}\\/\\d{2}\\/\\d{4}")) {
+        JOptionPane.showMessageDialog(null, "Bitte geben Sie datum in dieses Format: dd/MM/yyyy", "Attention", JOptionPane.WARNING_MESSAGE);
+        break;
+      }
+
       ArrayList<String[]> members = db.selectAllMitglieder();
 
       if (fullName == "" || date == "") {

@@ -7,6 +7,12 @@ import java.util.*;
 import javax.swing.*;
 import javax.swing.event.*;
 
+import java.security.*;
+import java.security.spec.*;
+
+import javax.crypto.*;
+import javax.crypto.spec.*;
+
 import colt.*;
 
 /**
@@ -19,17 +25,15 @@ import colt.*;
 
 @SuppressWarnings({ "unused", "serial" })
 public class GuiLogin extends JFrame {
-  // Anfang Attribute
   private JLabel lbHead = new JLabel();
   private JLabel lbUsername = new JLabel();
   private JTextField txtFieldUsername = new JTextField();
   private JLabel lbPassword = new JLabel();
   private JPasswordField pwdFieldPassword = new JPasswordField();
   private JButton btnLogin = new JButton();
-  // Ende Attribute
+  private JButton btnRegister = new JButton();
 
   public GuiLogin() { 
-    // Frame-Initialisierung
     super();
 
     setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
@@ -45,78 +49,99 @@ public class GuiLogin extends JFrame {
     Container cp = getContentPane();
     cp.setLayout(null);
 
-    // Anfang Komponenten
-
-    //Header
     lbHead.setBounds(135, 0, 323, 33);
     lbHead.setText("Schützenverein Der glühende Colt");
     lbHead.setFont(new Font("Arial Narrow", Font.BOLD, 24));
     cp.add(lbHead);
 
-    //Label für Benutzername
     lbUsername.setBounds(245, 85, 122, 23);
     lbUsername.setText("Benutzername:");
     cp.add(lbUsername);
 
-    //Textfeld für den Benutzernamen
     txtFieldUsername.setBounds(202, 104, 174, 28);
     txtFieldUsername.setHorizontalAlignment(SwingConstants.CENTER);
     cp.add(txtFieldUsername);
 
-    //Label für Passwort
     lbPassword.setBounds(260, 139, 82, 23);
     lbPassword.setText("Passwort:");
     cp.add(lbPassword);
 
-    //Passwortfeld für das Passwort
     pwdFieldPassword.setBounds(202, 160, 174, 28);
     pwdFieldPassword.setHorizontalAlignment(SwingConstants.CENTER);
     cp.add(pwdFieldPassword);
 
-    //Anmelde Knopf
-    btnLogin.setBounds(245, 198, 91, 41);
+    btnLogin.setBounds(145, 198, 91, 41);
     btnLogin.setText("Anmelden");
     btnLogin.setMargin(new Insets(2, 2, 2, 2));
-
-    //Methodenaufruf für das drücken des Knopfes
     btnLogin.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent evt) {
         buttonLogin_ActionPerformed(evt);
       }
     });
-
     btnLogin.setFont(new Font("Dialog", Font.BOLD, 14));
     cp.add(btnLogin);
-    // Ende Komponenten
-    //
+
+    btnRegister.setBounds(245, 198, 91, 41);
+    btnRegister.setText("Registrieren");
+    btnRegister.setMargin(new Insets(2, 2, 2, 2));
+    btnRegister.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent evt) {
+        buttonRegister_ActionPerformed(evt);
+      }
+    });
+
+    btnRegister.setFont(new Font("Dialog", Font.BOLD, 14));
+    cp.add(btnRegister);
 
     setVisible(true);
-  } // end of public GuiLogin
-
-  // Anfang Methoden
-  //
+  }
 
   @SuppressWarnings("deprecation")
   public void buttonLogin_ActionPerformed(ActionEvent evt) {
-    // TODO hier Quelltext einfügen
     String username = txtFieldUsername.getText();
     String password = pwdFieldPassword.getText();
 
     Database db = new Database();
-    ArrayList<String> user = db.selectUser();
+    ArrayList<String[]> users = db.selectUser();
+    String expectedUsername = "";
+    String expectedPassword = "";
 
-    String expectedUsername = user.get(0);
-    String expectedPassword = user.get(1);
+    for (String[] user : users) {
+      String usersUsername = user[1];
 
-    if(username.equals(expectedUsername) && password.equals(expectedPassword)) {
-        System.out.println("Anmeldung erfolgt!");
+      if (usersUsername.equals(username)) {
+        expectedUsername = user[1];
+        expectedPassword = user[2];
+      }
+    }
+
+    PasswordHashing passHashing = new PasswordHashing();
+    String hashedPassword = passHashing.hash(password);
+    boolean passwordsEqual = false;
+    System.out.println(hashedPassword);
+    System.out.println(expectedPassword);
+
+    try {
+      passwordsEqual = passHashing.validate(password, expectedPassword);
+    } catch (NoSuchAlgorithmException e) {
+      System.out.println(e.getMessage());
+    } catch (InvalidKeySpecException ex) {
+      System.out.println(ex.getMessage());
+    }
+
+    if(username.equals(expectedUsername) && passwordsEqual) {
         this.hide();
         GuiDatabase homeScreen = new GuiDatabase(); 
     }
     else {
-        System.out.println("Du musst schon das richtige Passwort eingeben du kek!");
+        JOptionPane.showMessageDialog(this, "Das Benutzername und/oder Passwort ist falsch", "Attention", JOptionPane.WARNING_MESSAGE);
     }
-  } // end of buttonLogin_ActionPerformed
+  }
 
-  // Ende Methoden
-} // end of class GuiLogin
+  @SuppressWarnings("deprecation")
+  public void buttonRegister_ActionPerformed(ActionEvent evt) {
+    this.hide();
+    GuiRegister guiRegister = new GuiRegister();
+  }
+}
+

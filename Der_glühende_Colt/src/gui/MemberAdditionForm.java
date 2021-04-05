@@ -2,6 +2,7 @@ package colt.gui;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.text.*;
 import java.util.*;
 
 import javax.swing.*;
@@ -20,12 +21,13 @@ import colt.*;
  * @author Naglis Vidziunas
  */
 public class MemberAdditionForm extends JFrame {
+  protected DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
   protected JTextField txtFieldFirstName = new JTextField();
   protected JTextField txtFieldLastName = new JTextField();
-  protected JTextField txtFieldDateOfBirth = new JTextField();
+  protected JFormattedTextField txtFieldDateOfBirth = new JFormattedTextField(df);
   protected JTextField txtFieldIBAN = new JTextField();
-  protected JTextField txtFieldEntranceDate = new JTextField();
-  protected JTextField txtFieldLeavingDate = new JTextField();
+  protected JFormattedTextField txtFieldEntranceDate = new JFormattedTextField(df);
+  protected JFormattedTextField txtFieldLeavingDate = new JFormattedTextField(df);
   protected JTextField txtFieldStreet = new JTextField();
   protected JTextField txtFieldHouseNumber = new JTextField();
   protected JTextField txtFieldHouseNumberAdditional = new JTextField();
@@ -104,6 +106,10 @@ public class MemberAdditionForm extends JFrame {
 
     allowOnlyNumbers(txtFieldHouseNumber);
     allowOnlyNumbers(txtFieldPostcode);
+
+    validateDateFormat(txtFieldDateOfBirth);
+    validateDateFormat(txtFieldEntranceDate);
+    validateDateFormat(txtFieldLeavingDate);
 
     add(westPanel, BorderLayout.WEST);
     add(eastPanel, BorderLayout.EAST);
@@ -305,6 +311,30 @@ public class MemberAdditionForm extends JFrame {
         }
       }
     });
+  }
+
+  private void validateDateFormat(JFormattedTextField txtFieldDate) {
+    // txtFieldDate.addKeyListener(new KeyAdapter() {
+    //   public void keyPressed(KeyEvent ke) {
+    //     if (ke.getKeyChar() >= '0' && ke.getKeyChar() <= '9'
+    //         || ke.getKeyCode() == KeyEvent.VK_BACK_SPACE
+    //         || ke.getKeyCode() == KeyEvent.VK_DELETE
+    //         || ke.getKeyCode() == KeyEvent.VK_SLASH
+    //         && ke.getKeyCode() == KeyEvent.VK_SHIFT)
+    //     {
+    //       txtFieldDate.setEditable(true);
+    //     } else {
+    //       txtFieldDate.setEditable(false);
+    //       showWarningMsg("Bitte geben Sie Datum in die richtige Format: dd/MM/yyyy");
+    //       txtFieldDate.setEditable(true);
+    //     }
+    //   }
+    // });
+    // String date = txtFieldDate.getText();
+
+    // if (!date.matches("\\d{2}\\/\\d{2}\\/\\d{4}")) {
+    //   showWarningMsg("Bitte geben Sie Datum in die richtige Format: dd/MM/yyyy");
+    // }
   }
 
   private int getAddressID() {
