@@ -7,6 +7,8 @@ import java.security.spec.*;
 import javax.crypto.*;
 import javax.crypto.spec.*;
 
+import colt.models.*;
+
 /**
  * PasswordHashing - a simple class that is responsible for
  * creating a hashed version with PBKDF2 Hashing algorithm
@@ -37,8 +39,7 @@ public class PasswordHashing {
     return hex;
   }
 
-  private byte[] fromHex(String hex) throws NoSuchAlgorithmException
-  {
+  private byte[] fromHex(String hex) throws NoSuchAlgorithmException {
     byte[] bytes = new byte[hex.length() / 2];
 
     for (int i = 0; i < bytes.length; i++) {

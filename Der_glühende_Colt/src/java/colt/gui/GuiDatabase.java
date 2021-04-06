@@ -12,13 +12,13 @@ import java.time.LocalDate;
 import colt.*;
 
 /**
- *
- * Beschreibung
+ * GuiDatabase - a class that is responsible for displaying
+ * all of the components that make up a home screen for this
+ * project.
  *
  * @version 1.0 for 29.03.2021
  * @author David Stuirbrink, Naglis Vidziunas
  */
-
 @SuppressWarnings({ "unused", "serial" })
 public class GuiDatabase extends JFrame {
   private JLabel lbHead = new JLabel();
@@ -46,14 +46,13 @@ public class GuiDatabase extends JFrame {
     int x = (d.width - getSize().width) / 2;
     int y = (d.height - getSize().height) / 2;
     setLocation(x, y);
-    setTitle("GuiSchützenvereinHome");
+    setTitle("Home Schützenverein");
     setResizable(false);
     Container cp = getContentPane();
     cp.setLayout(null);
     LocalDate currentDate = LocalDate.now();
-    // Anfang Komponenten
 
-    lbHead.setBounds(32, 24, 324, 28);
+    lbHead.setBounds(32, 24, 400, 28);
     lbHead.setText("Schützenverein der glühende Colt");
     lbHead.setFont(new Font("Arial", Font.BOLD, 20));
     cp.add(lbHead);
@@ -64,7 +63,7 @@ public class GuiDatabase extends JFrame {
     lbDatum.setText(currentDate.toString());
     lbDatum.setFont(new Font("Dialog", Font.BOLD, 14));
     cp.add(lbDatum);
-    btnEdit.setBounds(529, 135, 75, 25);
+    btnEdit.setBounds(444, 135, 100, 25);
     btnEdit.setText("Bearbeiten");
     btnEdit.setMargin(new Insets(2, 2, 2, 2));
     btnEdit.addActionListener(new ActionListener() { 
@@ -73,7 +72,7 @@ public class GuiDatabase extends JFrame {
       }
     });
     cp.add(btnEdit);
-    btnAdd.setBounds(606, 135, 75, 25);
+    btnAdd.setBounds(550, 135, 100, 25);
     btnAdd.setText("Hinzufügen");
     btnAdd.setMargin(new Insets(2, 2, 2, 2));
     btnAdd.addActionListener(new ActionListener() { 
@@ -82,7 +81,7 @@ public class GuiDatabase extends JFrame {
       }
     });
     cp.add(btnAdd);
-    btnDelete.setBounds(684, 135, 75, 25);
+    btnDelete.setBounds(654, 135, 100, 25);
     btnDelete.setText("Löschen");
     btnDelete.setMargin(new Insets(2, 2, 2, 2));
     btnDelete.addActionListener(new ActionListener() { 
@@ -93,7 +92,7 @@ public class GuiDatabase extends JFrame {
     cp.add(btnDelete);
     tfSearch.setBounds(761, 134, 150, 28);
     cp.add(tfSearch);
-    btnSuchen.setBounds(912, 135, 59, 25);
+    btnSuchen.setBounds(912, 135, 100, 25);
     btnSuchen.setText("Suchen");
     btnSuchen.setMargin(new Insets(2, 2, 2, 2));
     btnSuchen.addActionListener(new ActionListener() { 
@@ -114,7 +113,7 @@ public class GuiDatabase extends JFrame {
     tData.getColumnModel().getColumn(8).setHeaderValue("Austrittsdatum");
     tData.getColumnModel().getColumn(9).setHeaderValue("Vermerke");
     cp.add(tspScrollPane);
-    btnScale.setBounds(960, 632, 75, 25);
+    btnScale.setBounds(935, 632, 100, 25);
     btnScale.setText("Vergrößern");
     btnScale.setMargin(new Insets(2, 2, 2, 2));
     btnScale.addActionListener(new ActionListener() { 
@@ -132,12 +131,10 @@ public class GuiDatabase extends JFrame {
       }
     });
     cp.add(btnAttendance);
-    // Ende Komponenten
-    //
-    setTablesData();
 
+    setTablesData();
     setVisible(true);
-  } // end of public GuiSchützenvereinHome
+  }
 
   private void setTablesData() {
     ArrayList<String[]> members = db.selectAllMitglieder();
@@ -173,6 +170,7 @@ public class GuiDatabase extends JFrame {
 
     for (String[] member : members) {
       if (member[1].equals(firstName) && member[2].equals(lastName)) {
+        db.deleteAdresse((int) Integer.valueOf(member[11]));
         db.deleteMitglieder((int) Integer.valueOf(member[0]));
         tmData.removeRow(row);
       }
@@ -201,9 +199,6 @@ public class GuiDatabase extends JFrame {
   }
 
   public void btnAttendance_ActionPerformed(ActionEvent evt) {
-      //Anwesenheit öffnen
       GuiAttendance attendanceScreen = new GuiAttendance(); 
   }
-
-  // Ende Methoden
 }

@@ -12,16 +12,14 @@ import javax.swing.table.*;
 import colt.*;
 
 /**
- *
- * Beschreibung
+ * GuiAttendance - a simple class that is responsible for
+ * handling GUI attendance screen.
  *
  * @version 1.0 vom 30.03.2021
  * @author David Stuirbrink, Naglis Vidziunas
  */
-
 @SuppressWarnings({ "serial", "unused" })
 public class GuiAttendance extends JFrame {
-  // Anfang Attribute
   private JLabel lbAttendance = new JLabel();
   private JPanel pContent = new JPanel(null, true);
   private JLabel lbDepartment = new JLabel();
@@ -34,10 +32,8 @@ public class GuiAttendance extends JFrame {
   private JButton btnAddNewRow = new JButton();
   private JButton btnDelete = new JButton();
   private JLabel lbDate = new JLabel();
-  // Ende Attribute
 
   public GuiAttendance() { 
-    // Frame-Initialisierung
     super();
     setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
     int frameWidth = 713; 
@@ -47,14 +43,13 @@ public class GuiAttendance extends JFrame {
     int x = (d.width - getSize().width) / 2;
     int y = (d.height - getSize().height) / 2;
     setLocation(x, y);
-    setTitle("GuiAnwesenheit");
+    setTitle("Anwesenheit Schützenverein");
     setResizable(false);
     Container cp = getContentPane();
     cp.setLayout(null);
     LocalDate currentDate = LocalDate.now();
-    // Anfang Komponenten
 
-    lbAttendance.setBounds(223, 20, 124, 28);
+    lbAttendance.setBounds(223, 20, 180, 28);
     lbAttendance.setText("Anwesenheit");
     lbAttendance.setHorizontalAlignment(SwingConstants.CENTER);
     lbAttendance.setFont(new Font("Arial", Font.BOLD, 20));
@@ -111,14 +106,11 @@ public class GuiAttendance extends JFrame {
     lbDate.setText(currentDate.toString());
     lbDate.setFont(new Font("Dialog", Font.BOLD, 16));
     cp.add(lbDate);
-    // Ende Komponenten
+
     listPresent();
-
     setVisible(true);
-  } // end of public GuiAnwesenheit
+  }
 
-  // Anfang Methoden
-  //
   private void listPresent() {
     Database db = new Database();
     ArrayList<String[]> presentMembers = db.selectAllPresent();
@@ -158,6 +150,5 @@ public class GuiAttendance extends JFrame {
 
   } // end of btnScale_ActionPerformed
 
-  // Ende Methoden
-} // end of class GuiAnwesenheit
+}
 

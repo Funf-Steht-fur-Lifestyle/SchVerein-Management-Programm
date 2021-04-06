@@ -86,7 +86,8 @@ public class AttendanceMarker {
                   : tmAttendance.getValueAt(i, 1).toString();
 
       if (!date.matches("\\d{2}\\/\\d{2}\\/\\d{4}")) {
-        JOptionPane.showMessageDialog(null, "Bitte geben Sie datum in dieses Format: dd/MM/yyyy", "Attention", JOptionPane.WARNING_MESSAGE);
+        MessageDialog msgDialog = new MessageDialog();
+        msgDialog.showWarningMsg(null, "Bitte geben Sie datum in das richtiges Format: dd/MM/yyyy");
         break;
       }
 

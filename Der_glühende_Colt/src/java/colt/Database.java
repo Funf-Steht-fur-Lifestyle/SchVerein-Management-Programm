@@ -3,6 +3,8 @@ package colt;
 import java.sql.*;
 import java.util.*;
 
+import colt.models.*;
+
 /**
  * Database - a class that is responsible for storing data
  * in and getting data from database.
@@ -255,7 +257,7 @@ public class Database {
   }
 
   public void deleteAdresse(int id) {
-    String deleteAdresseQuery = "DELETE FROM adresse WHERE addressID = ?";
+    String deleteAdresseQuery = "DELETE FROM adresse WHERE adresseID = ?";
 
     try {
       Connection conn = connect();
