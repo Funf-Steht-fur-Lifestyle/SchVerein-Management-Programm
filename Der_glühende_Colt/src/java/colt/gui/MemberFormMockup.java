@@ -22,7 +22,7 @@ import colt.models.*;
  * @author Naglis Vidziunas
  */
 public class MemberFormMockup extends JFrame {
-  protected DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+  protected DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
   protected JTextField txtFieldFirstName = new JTextField();
   protected JTextField txtFieldLastName = new JTextField();
   protected JFormattedTextField txtFieldDateOfBirth = new JFormattedTextField(df);

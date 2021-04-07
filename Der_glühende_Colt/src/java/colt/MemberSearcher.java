@@ -54,6 +54,7 @@ public class MemberSearcher {
       boolean equal = false;
 
       for (String[] member : members) {
+        int run = 0;
         for (int i = 0; i < member.length; i++) {
           String value = (member[i] == null) ? "" : member[i].toLowerCase();
           String firstName = (member[1] == null) ? "" : member[1];
@@ -69,16 +70,16 @@ public class MemberSearcher {
             }
 
             if (value.equals(keyword) && !contains) {
-              String isBoardMember = "Nein";
+              String isBoardMember = (value.equals("1")) ? "Ja" : "Nein";
+              run++;
+              System.out.println(run);
 
-              if (value.equals("1")) {
-                isBoardMember = "Ja";
+              if (run == search.length) {
+                tmData.addRow(new Object[]{
+                  member[1], member[2], member[3], member[4], member[5],
+                  member[6], isBoardMember, member[8], member[9], member[10]
+                });
               }
-
-              tmData.addRow(new Object[]{
-                member[1], member[2], member[3], member[4], member[5],
-                member[6], isBoardMember, member[8], member[9], member[10]
-              });
             }
           }
         }

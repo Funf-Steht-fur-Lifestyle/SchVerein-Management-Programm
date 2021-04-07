@@ -18,7 +18,7 @@ import colt.*;
 
 /**
  * GuiLRMockup - a class that defines the design for GUI
- * Login- und Registerfenster. This class is used with
+ * login und register screen. This class is used with
  * GuiLogin and GuiRegister classes
  *
  * @version 1.0 vom 06.04.2021

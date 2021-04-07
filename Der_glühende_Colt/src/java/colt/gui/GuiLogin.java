@@ -2,17 +2,13 @@ package colt.gui;
 
 import java.awt.*;
 import java.awt.event.*;
-import java.lang.*;
-import java.util.*;
-
-import javax.swing.*;
-import javax.swing.event.*;
-
 import java.security.*;
 import java.security.spec.*;
+import java.time.*;
+import java.util.*;
+import java.util.concurrent.*;
 
-import javax.crypto.*;
-import javax.crypto.spec.*;
+import javax.swing.*;
 
 import colt.*;
 
@@ -27,7 +23,7 @@ import colt.*;
 public class GuiLogin extends GuiLRMockup {
   private Database db = new Database();
 
-  public GuiLogin() { 
+  public GuiLogin() {
     super();
     setTitle("Anmeldung Schützenverein");
 

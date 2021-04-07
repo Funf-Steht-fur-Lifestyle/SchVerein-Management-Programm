@@ -19,7 +19,6 @@ public class Database {
     try {
       Class.forName("org.sqlite.JDBC");
       conn = DriverManager.getConnection("jdbc:sqlite:data.db");
-      conn.createStatement().execute("PRAGMA foreign_keys = ON");
     } catch (Exception e) {
       System.err.println(e.getClass().getName() + ": " + e.getMessage());
       System.exit(0);
@@ -45,7 +44,7 @@ public class Database {
   }
 
   public ArrayList<String[]> selectUser() {
-    String selectUserQuery = "SELECT * FROM benutzer JOIN mitglieder";
+    String selectUserQuery = "SELECT * FROM benutzer";
     ArrayList<String[]> users = new ArrayList<String[]>();
 
     try {
@@ -57,10 +56,11 @@ public class Database {
       while (rs.next()) {
         String[] user = new String[columnNumber];
 
-        for (int i = 1; i < columnNumber; i++) {
-          Object obj = rs.getObject(i);
-          user[i - 1] = (obj == null) ? null : obj.toString();
+        for (int i = 1; i <= columnNumber; i++) {
+          String obj = rs.getString(i);
+          user[i - 1] = obj;
         }
+
         users.add(user);
       }
     } catch (SQLException e) {
@@ -116,7 +116,7 @@ public class Database {
   }
 
   public ArrayList<String[]> selectAllMitglieder() {
-    String selectMitgliederQuery = "SELECT * FROM mitglieder JOIN adresse USING (adresseID)";
+    String selectMitgliederQuery = "SELECT * FROM mitglieder";
     ArrayList<String[]> members = new ArrayList<String[]>();
 
     try {
@@ -128,7 +128,7 @@ public class Database {
       while (rs.next()) {
         String[] member = new String[columnNumber];
 
-        for (int i = 1; i < columnNumber; i++) {
+        for (int i = 1; i <= columnNumber; i++) {
           Object obj = rs.getObject(i);
           member[i - 1] = (obj == null) ? null : obj.toString();
         }
@@ -206,7 +206,7 @@ public class Database {
   }
 
   public ArrayList<String[]> selectAllAdresse() {
-    String selectMitgliederQuery = "SELECT * FROM adresse JOIN mitglieder USING (adresseID)";
+    String selectMitgliederQuery = "SELECT * FROM adresse";
     ArrayList<String[]> addresses = new ArrayList<String[]>();
 
     try {
@@ -219,7 +219,7 @@ public class Database {
       while (rs.next()) {
         String[] address = new String[columnNumber];
 
-        for (int i = 1; i < columnNumber; i++) {
+        for (int i = 1; i <= columnNumber; i++) {
           Object obj = rs.getObject(i);
           address[i - 1] = (obj == null) ? null : obj.toString();
         }
@@ -287,7 +287,7 @@ public class Database {
   }
 
   public ArrayList<String[]> selectAllPresent() {
-    String selectPresentQuery = "SELECT * FROM anwesenheit JOIN mitglieder USING (mitgliedernummer)";
+    String selectPresentQuery = "SELECT * FROM anwesenheit";
     ArrayList<String[]> presentMembers = new ArrayList<String[]>();
 
     try {
@@ -299,7 +299,7 @@ public class Database {
       while (rs.next()) {
         String[] presentMember = new String[columnNumber];
 
-        for (int i = 1; i < columnNumber; i++) {
+        for (int i = 1; i <= columnNumber; i++) {
           Object obj = rs.getObject(i);
           presentMember[i - 1] = (obj == null) ? null : obj.toString();
         }

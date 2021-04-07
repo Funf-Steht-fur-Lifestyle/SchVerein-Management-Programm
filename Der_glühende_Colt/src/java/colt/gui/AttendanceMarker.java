@@ -1,6 +1,7 @@
 package colt.gui;
 
 import java.util.*;
+import java.time.*;
 
 import javax.swing.*;
 import javax.swing.table.*;
@@ -18,6 +19,7 @@ public class AttendanceMarker {
   private DefaultTableModel tmAttendance;
   private JTable tAttendance;
   private Database db = new Database();
+  private LocalDate currentDate = LocalDate.now();
 
   public AttendanceMarker(DefaultTableModel tmAttendance, JTable tAttendance) {
     this.tmAttendance = tmAttendance;
@@ -50,58 +52,34 @@ public class AttendanceMarker {
     return membersAttendance;
   }
 
-  public void unmarkAsAttended() {
-    int row = tAttendance.getSelectedRow();
-    String fullName = (tmAttendance.getValueAt(row, 0) == null) ? ""
-                    : tmAttendance.getValueAt(row, 0).toString();
-    String date = (tmAttendance.getValueAt(row, 1) == null) ? ""
-                : tmAttendance.getValueAt(row, 1).toString();
+  private boolean alreadyMarked(String memberID, String currentDate) {
+    ArrayList<String[]> presentMembers = db.selectAllPresent();
 
-    if (fullName == "" || date == "") {
-      tmAttendance.removeRow(row);
-    } else {
-      ArrayList<String[]> presentMembers = db.selectAllPresent();
-      ArrayList<String[]> members = db.selectAllMitglieder();
-
-      for (String[] presentMember : presentMembers) {
-        for (String[] member : members) {
-          String memberFullName = member[1] + " " + member[2];
-          if (memberFullName.equals(fullName) && presentMember[1].equals(date)) {
-            db.deletePresent((int) Integer.valueOf(member[0]), presentMember[1]);
-          }
-        }
+    for (String[] presentMember : presentMembers) {
+      if (memberID.equals(presentMember[0]) && currentDate.equals(presentMember[1])) {
+        return true;
       }
-
-      tmAttendance.removeRow(row);
     }
+
+    return false;
   }
 
   public void markAsAttended() {
-    int row = tmAttendance.getRowCount();
+    int rows = tmAttendance.getRowCount();
 
-    for (int i = 0; i < row; i++) {
+    for (int i = 0; i < rows; i++) {
       String fullName = (tmAttendance.getValueAt(i, 0) == null) ? ""
                       : tmAttendance.getValueAt(i, 0).toString();
-      String date = (tmAttendance.getValueAt(i, 1) == null) ? ""
-                  : tmAttendance.getValueAt(i, 1).toString();
-
-      if (!date.matches("\\d{2}\\/\\d{2}\\/\\d{4}")) {
-        MessageDialog msgDialog = new MessageDialog();
-        msgDialog.showWarningMsg(null, "Bitte geben Sie datum in das richtiges Format: dd/MM/yyyy");
-        break;
-      }
+      boolean isPresent = (boolean) tmAttendance.getValueAt(i, 1);
 
       ArrayList<String[]> members = db.selectAllMitglieder();
 
-      if (fullName == "" || date == "") {
-        continue;
-      }
-
       for (String[] member : members) {
         String memberFullName = member[1] + " " + member[2];
+        boolean isMarked = alreadyMarked(member[0], currentDate.toString());
 
-        if (fullName.equals(memberFullName)) {
-          db.setAsPresent((int) Integer.valueOf(member[0]), date);
+        if (fullName.equals(memberFullName) && isPresent && !isMarked) {
+          db.setAsPresent((int) Integer.valueOf(member[0]), currentDate.toString());
         }
       }
     }

@@ -133,6 +133,10 @@ public class GuiDatabase extends JFrame {
     cp.add(btnAttendance);
 
     setTablesData();
+
+    ColtSystray coltSystray = new ColtSystray();
+    coltSystray.notifyOfMembersBirthday();
+
     setVisible(true);
   }
 
