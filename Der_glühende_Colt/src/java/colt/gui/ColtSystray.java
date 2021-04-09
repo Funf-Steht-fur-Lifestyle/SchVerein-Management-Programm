@@ -22,8 +22,7 @@ public class ColtSystray {
 
   public ColtSystray() {
     SystemTray tray = SystemTray.getSystemTray();
-    ImageIcon icon = new ImageIcon(getClass().getResource("keyboard.png"));
-    Image image = icon.getImage();
+    Image image = Toolkit.getDefaultToolkit().getImage("keyboard.png");
     PopupMenu popup = createPopup();
 
     try {

@@ -1,3 +1,5 @@
 Manifest-Version: 1.0
-Package-Name: gui
-Main-Class: gui.Frame
+Package-Name: colt
+Main-Class: colt.gui.Frame
+Class-Path: ../lib/sqlite-jdbc-3.34.0.jar glühende-colt.jar
+Premissions: *
