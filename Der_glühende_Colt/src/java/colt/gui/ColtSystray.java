@@ -45,6 +45,14 @@ public class ColtSystray {
         System.exit(0);
       }
     });
+    MenuItem menuItemPasswordChanger = new MenuItem("Passwort ändern");
+    menuItemPasswordChanger.addActionListener(new ActionListener() {
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        GuiPasswordChanger passwordChangerScreen = new GuiPasswordChanger();
+      }
+    });
+    popup.add(menuItemPasswordChanger);
     popup.add(menuItemExit);
 
     return popup;

@@ -43,44 +43,37 @@ public class Database {
     }
   }
 
-  public ArrayList<String[]> selectUser() {
+  public ArrayList<String> selectUser() {
     String selectUserQuery = "SELECT * FROM benutzer";
-    ArrayList<String[]> users = new ArrayList<String[]>();
+    ArrayList<String> user = new ArrayList<String>();
 
     try {
       Connection conn = connect();
       Statement statement = conn.createStatement();
       ResultSet rs = statement.executeQuery(selectUserQuery);
-      int columnNumber = rs.getMetaData().getColumnCount();
 
       while (rs.next()) {
-        String[] user = new String[columnNumber];
-
-        for (int i = 1; i <= columnNumber; i++) {
-          String obj = rs.getString(i);
-          user[i - 1] = obj;
-        }
-
-        users.add(user);
+        user.add(rs.getString(1));
+        user.add(rs.getString(2));
+        user.add(rs.getString(3));
       }
     } catch (SQLException e) {
       System.out.println(e.getMessage());
     }
 
-    return users;
+    return user;
   }
 
-  public void updateUserInfo(String username, String password, int id) {
-    String updateUserInfoQuery = "UPDATE benutzer SET benutzername = ?,"
-                               + " passwort = ? WHERE id = ?";
+  public void updateUserInfo(String password, int id) {
+    String updateUserInfoQuery = "UPDATE benutzer SET passwort = ? WHERE id = ?";
 
     try {
       Connection conn = connect();
       PreparedStatement pStatement = conn.prepareStatement(updateUserInfoQuery);
 
-      pStatement.setString(1, username);
-      pStatement.setString(2, password);
-      pStatement.setInt(3, id);
+      pStatement.setString(1, password);
+      pStatement.setInt(2, id);
+      pStatement.executeUpdate();
     } catch (SQLException e) {
       System.out.println(e.getMessage());
     }
@@ -174,6 +167,87 @@ public class Database {
     try {
       Connection conn = connect();
       PreparedStatement pStatement = conn.prepareStatement(deleteMitgliederQuery);
+
+      pStatement.setInt(1, id);
+      pStatement.executeUpdate();
+    } catch (SQLException e) {
+      System.out.println(e.getMessage());
+    }
+  }
+
+  public void insertAbteilung(Department department, int memberID) {
+    String insertAbteilungQuery = "INSERT INTO abteilung("
+                                 + "abteilungsname, abteilungsleiter, gebuehren,"
+                                 + " rabatte, mitgliedernummer)"
+                                 + " VALUES(?,?,?,?,?)";
+
+    try {
+      Connection conn = connect();
+      PreparedStatement pStatement = conn.prepareStatement(insertAbteilungQuery);
+
+      pStatement.setString(1, department.name);
+      pStatement.setInt(2, department.manager);
+      pStatement.setInt(3, department.cost);
+      pStatement.setInt(4, department.discount);
+      pStatement.setInt(5, memberID);
+      pStatement.executeUpdate();
+    } catch (SQLException e) {
+      System.out.println(e.getMessage());
+    }
+  }
+
+  public ArrayList<String[]> selectAllAbteilung() {
+    String selectAbteilungQuery = "SELECT * FROM abteilung";
+    ArrayList<String[]> departments = new ArrayList<String[]>();
+
+    try {
+      Connection conn = connect();
+      Statement statement = conn.createStatement();
+      ResultSet rs = statement.executeQuery(selectAbteilungQuery);
+      int columnNumber = rs.getMetaData().getColumnCount();
+
+      while (rs.next()) {
+        String[] department = new String[columnNumber];
+
+        for (int i = 1; i <= columnNumber; i++) {
+          Object obj = rs.getObject(i);
+          department[i - 1] = (obj == null) ? null : obj.toString();
+        }
+        departments.add(department);
+      }
+    } catch (SQLException e) {
+      System.out.println(e.getMessage());
+    }
+
+    return departments;
+  }
+
+  public void updateAbteilung(Department department, int memberID) {
+    String updateAbteilungQuery = "UPDATE abteilung SET abteilungsname = ?,"
+                                 + " abteilungsleiter = ?, gebuehren = ?, rabatte = ?"
+                                 + " WHERE mitgliedernummer = ?";
+
+    try {
+      Connection conn = connect();
+      PreparedStatement pStatement = conn.prepareStatement(updateAbteilungQuery);
+
+      pStatement.setString(1, department.name);
+      pStatement.setInt(2, department.manager);
+      pStatement.setInt(3, department.cost);
+      pStatement.setInt(4, department.discount);
+      pStatement.setInt(5, memberID);
+      pStatement.executeUpdate();
+    } catch (SQLException e) {
+      System.out.println(e.getMessage());
+    }
+  }
+
+  public void deleteAbteilung(int id) {
+    String deleteAbteilungQuery = "DELETE FROM abteilung WHERE abteilungsNummer = ?";
+
+    try {
+      Connection conn = connect();
+      PreparedStatement pStatement = conn.prepareStatement(deleteAbteilungQuery);
 
       pStatement.setInt(1, id);
       pStatement.executeUpdate();

@@ -11,8 +11,8 @@ import colt.models.*;
 
 /**
  * PasswordHashing - a simple class that is responsible for
- * creating a hashed version with PBKDF2 Hashing algorithm
- * of the given password. Also it is responsible to
+ * creating a hashed version of the given password with
+ * PBKDF2 Hashing algorithm. Also it is responsible to
  * validate given password with the one stored in database.
  *
  * @version 1.0 from 02.04.2021
@@ -100,7 +100,7 @@ public class PasswordHashing {
     byte[] testHash = createHash(hash);
     int diff = realHash.length ^ testHash.length;
 
-    for(int i = 0; i < realHash.length && i < testHash.length; i++) {
+    for (int i = 0; i < realHash.length && i < testHash.length; i++) {
       diff |= realHash[i] ^ testHash[i];
     }
 

@@ -24,12 +24,11 @@ public class GuiDatabase extends JFrame {
   private JLabel lbHead = new JLabel();
   private JLabel jLabel1 = new JLabel();
   private JLabel lbDatum = new JLabel();
-  private JButton btnEdit = new JButton();
   private JButton btnAdd = new JButton();
   private JButton btnDelete = new JButton();
   private JTextField tfSearch = new JTextField();
   private JButton btnSuchen = new JButton();
-  protected JTable tData = new JTable(0, 10);
+  protected JTable tData = new JTable(0, 8);
   private DefaultTableModel tmData = (DefaultTableModel) tData.getModel();
   private JScrollPane tspScrollPane = new JScrollPane(tData);
   private JButton btnScale = new JButton();
@@ -47,7 +46,7 @@ public class GuiDatabase extends JFrame {
     int y = (d.height - getSize().height) / 2;
     setLocation(x, y);
     setTitle("Home Schützenverein");
-    setResizable(false);
+    setResizable(true);
     Container cp = getContentPane();
     cp.setLayout(null);
     LocalDate currentDate = LocalDate.now();
@@ -63,15 +62,6 @@ public class GuiDatabase extends JFrame {
     lbDatum.setText(currentDate.toString());
     lbDatum.setFont(new Font("Dialog", Font.BOLD, 14));
     cp.add(lbDatum);
-    btnEdit.setBounds(444, 135, 100, 25);
-    btnEdit.setText("Bearbeiten");
-    btnEdit.setMargin(new Insets(2, 2, 2, 2));
-    btnEdit.addActionListener(new ActionListener() { 
-      public void actionPerformed(ActionEvent evt) { 
-        btnEdit_ActionPerformed(evt);
-      }
-    });
-    cp.add(btnEdit);
     btnAdd.setBounds(550, 135, 100, 25);
     btnAdd.setText("Hinzufügen");
     btnAdd.setMargin(new Insets(2, 2, 2, 2));
@@ -107,17 +97,15 @@ public class GuiDatabase extends JFrame {
     tData.getColumnModel().getColumn(2).setHeaderValue("Geburtstag");
     tData.getColumnModel().getColumn(3).setHeaderValue("IBAN");
     tData.getColumnModel().getColumn(4).setHeaderValue("Geschlecht");
-    tData.getColumnModel().getColumn(5).setHeaderValue("Behinderungen");
-    tData.getColumnModel().getColumn(6).setHeaderValue("Vorstandsmitglied");
-    tData.getColumnModel().getColumn(7).setHeaderValue("Eintrittsdatum");
-    tData.getColumnModel().getColumn(8).setHeaderValue("Austrittsdatum");
-    tData.getColumnModel().getColumn(9).setHeaderValue("Vermerke");
+    tData.getColumnModel().getColumn(5).setHeaderValue("Vorstandsmitglied");
+    tData.getColumnModel().getColumn(6).setHeaderValue("Eintrittsdatum");
+    tData.getColumnModel().getColumn(7).setHeaderValue("Austrittsdatum");
     cp.add(tspScrollPane);
     btnScale.setBounds(935, 632, 100, 25);
     btnScale.setText("Vergrößern");
     btnScale.setMargin(new Insets(2, 2, 2, 2));
-    btnScale.addActionListener(new ActionListener() { 
-      public void actionPerformed(ActionEvent evt) { 
+    btnScale.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent evt) {
           btnScale_ActionPerformed(evt);
       }
     });
@@ -134,6 +122,13 @@ public class GuiDatabase extends JFrame {
 
     setTablesData();
 
+    tData.addMouseListener(new MouseAdapter() {
+    @Override
+      public void mouseClicked(MouseEvent evt) {
+        MemberEditForm editForm = new MemberEditForm(tData, tmData);
+      }
+    });
+
     ColtSystray coltSystray = new ColtSystray();
     coltSystray.notifyOfMembersBirthday();
 
@@ -149,19 +144,48 @@ public class GuiDatabase extends JFrame {
         isBoardMember = "Ja";
       }
 
+      ArrayList<String[]> departments = db.selectAllAbteilung();
+      String[] departmentNames = {
+        "Bogen", "Luftdruck", "Feuerwaffen"
+      };
+
+      boolean inBowDepartment = false;
+      boolean inAtmosphericDepartment = false;
+      boolean inFirearmDepartment = false;
+
+      for (String[] department : departments) {
+        if (member[0].equals(department[5])) {
+          if (department[1].equals("Bogen")) {
+            inBowDepartment = true;
+          } else if (department[1].equals("Luftdruck")) {
+            inAtmosphericDepartment = true;
+          } else if (department[1].equals("Feuerwaffen")) {
+            inFirearmDepartment = true;
+          } else {
+            System.out.println("Nothin");
+          }
+        }
+      }
+
       tmData.addRow(new Object[]{
         member[1], member[2], member[3], member[4], member[5],
-        member[6], isBoardMember, member[8], member[9], member[10]
+        isBoardMember, member[8], member[9]//, member[10]
       });
     }
   }
 
-  public void btnEdit_ActionPerformed(ActionEvent evt) {
-    MemberEditForm form = new MemberEditForm(tData, tmData);
+  public void btnAdd_ActionPerformed(ActionEvent evt) {
+    MemberAdditionForm addForm = new MemberAdditionForm(tmData);
   }
 
-  public void btnAdd_ActionPerformed(ActionEvent evt) {
-    MemberAdditionForm form = new MemberAdditionForm(tmData);
+  private void deleteDepartments(String memberID) {
+    ArrayList<String[]> departments = db.selectAllAbteilung();
+
+    for (String[] department : departments) {
+      if (department[5].equals(memberID)) {
+        db.deleteAbteilung((int) Integer.valueOf(department[0]));
+      }
+    }
   }
 
   public void btnDelete_ActionPerformed(ActionEvent evt) {
@@ -174,6 +198,7 @@ public class GuiDatabase extends JFrame {
 
     for (String[] member : members) {
       if (member[1].equals(firstName) && member[2].equals(lastName)) {
+        deleteDepartments(member[0]);
         db.deleteAdresse((int) Integer.valueOf(member[11]));
         db.deleteMitglieder((int) Integer.valueOf(member[0]));
         tmData.removeRow(row);
@@ -186,6 +211,7 @@ public class GuiDatabase extends JFrame {
   public void bSuchen_ActionPerformed(ActionEvent evt) {
     MemberSearcher searcher = new MemberSearcher(tmData);
     searcher.search(tfSearch);
+    btnSuchen.setText("Abbrechen");
 
     searchedTimes++;
 
@@ -193,13 +219,14 @@ public class GuiDatabase extends JFrame {
       tmData.getDataVector().removeAllElements();
 
       setTablesData();
-      searcher.search(tfSearch);
+      btnSuchen.setText("Suchen");
+
+      searchedTimes = 0;
     }
   }
 
   public void btnScale_ActionPerformed(ActionEvent evt) {
     // Skalieren der Gui
-    
   }
 
   public void btnAttendance_ActionPerformed(ActionEvent evt) {

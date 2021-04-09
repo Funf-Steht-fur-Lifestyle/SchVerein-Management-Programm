@@ -42,8 +42,8 @@ public class MemberAdditionForm extends MemberFormMockup {
 
     tmData.addRow(new Object[]{
       member.firstName, member.lastName, member.dateOfBirth,
-      member.iban, member.sex, member.disabilities, isBoardMember,
-      member.entranceDate, member.leavingDate, member.notes
+      member.iban, member.sex, isBoardMember,
+      member.entranceDate, member.leavingDate
     });
   }
 
@@ -55,10 +55,18 @@ public class MemberAdditionForm extends MemberFormMockup {
     return addressID;
   }
 
+  private int getMemberID() {
+    ArrayList<String[]> members = db.selectAllMitglieder();
+    String[] member = members.get(members.size() - 1);
+    int memberID = Integer.valueOf(member[0]);
+
+    return memberID;
+  }
+
   @Override
   protected void btnConfirm_ActionPerformed(ActionEvent evt) {
     if (!isAllRequiredTxtFieldsFilled()) {
-        showWarningMsg("Sie müssen alle erforderliche Felder ausfüllen.");
+        msgDialog.showWarningMsg(this, "Sie müssen alle erforderliche Felder ausfüllen.");
     } else {
       Member member = getMembersData();
       insertMembersDataToTable(member);
@@ -68,6 +76,20 @@ public class MemberAdditionForm extends MemberFormMockup {
 
       int addressID = getAddressID();
       db.insertMitglieder(member, addressID);
+
+      int memberID = getMemberID();
+      JCheckBox[] chcBoxDepartments = {
+        chcBoxBowDepartment, chcBoxAtmosphericDepartment,
+        chcBoxFirearmDepartment
+      };
+
+      for (JCheckBox chcBoxDepartment : chcBoxDepartments) {
+        Department department = getDepartmentData(chcBoxDepartment);
+
+        if (department != null)  {
+          db.insertAbteilung(department, memberID);
+        }
+      }
     }
   }
 }

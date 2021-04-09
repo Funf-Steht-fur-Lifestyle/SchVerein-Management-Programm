@@ -24,6 +24,7 @@ public class MemberEditForm extends MemberFormMockup {
   private JTable tData;
   private DefaultTableModel tmData;
   private Database db = new Database();
+  private MessageDialog msgDialog = new MessageDialog();
 
   public MemberEditForm(JTable tData, DefaultTableModel tmData) {
     setTitle("Bearbeiten");
@@ -34,6 +35,7 @@ public class MemberEditForm extends MemberFormMockup {
 
     setMemberDataToTxtFields();
     setAddressDataToTxtFields();
+    setDepartments();
   }
 
   private void setMemberDataToTxtFields() {
@@ -43,21 +45,30 @@ public class MemberEditForm extends MemberFormMockup {
     String dateOfBirth = tmData.getValueAt(row, 2).toString();
     String iban = tmData.getValueAt(row, 3).toString();
     String sex = tmData.getValueAt(row, 4).toString();
-    String disabilities = tmData.getValueAt(row, 5).toString();
-    String boardMember = tmData.getValueAt(row, 6).toString();
-    String entranceDate = tmData.getValueAt(row, 7).toString();
-    String leavingDate = (tmData.getValueAt(row, 8) == null) ? ""
-                       : tmData.getValueAt(row, 8).toString();
-    String notes = (tmData.getValueAt(row, 9) == null) ? ""
-                 : tmData.getValueAt(row, 9).toString();
+    String boardMember = tmData.getValueAt(row, 5).toString();
+    String entranceDate = (tmData.getValueAt(row, 6) == null) ? ""
+                        : tmData.getValueAt(row, 6).toString();
+    String leavingDate = (tmData.getValueAt(row, 7) == null) ? ""
+                       : tmData.getValueAt(row, 7).toString();
+
+    String notes = "";
+    String disabilities = "";
+    ArrayList<String[]> members = db.selectAllMitglieder();
+
+    for (String[] member : members) {
+      if (member[1].equals(firstName) && member[2].equals(lastName)) {
+        notes = member[10];
+        disabilities = member[6];
+      }
+    }
 
     txtFieldFirstName.setText(firstName);
     txtFieldLastName.setText(lastName);
     txtFieldDateOfBirth.setText(dateOfBirth);
     txtFieldIBAN.setText(iban);
-    setSex(sex);
+    comBoxSexSelection.setSelectedItem(sex);
+    comBoxBoardMember.setSelectedItem(boardMember);
     txtAreaDisabilities.setText(disabilities);
-    setBoardMember(boardMember);
     txtFieldEntranceDate.setText(entranceDate);
     txtFieldLeavingDate.setText(leavingDate);
     txtAreaNotes.setText(notes);
@@ -122,21 +133,27 @@ public class MemberEditForm extends MemberFormMockup {
     }
   }
 
-  private void setSex(String sex) {
-    if (sex.equals("maennlich")) {
-      rBtnMan.setSelected(true);
-    } else if (sex.equals("weiblich")) {
-      rBtnWoman.setSelected(true);
-    } else {
-      rBtnDiverse.setSelected(true);
-    }
-  }
+  private void setDepartments() {
+    Pair ids = getMemberAndAddressID();
+    String memberID = ids.first;
+    ArrayList<String[]> departments = db.selectAllAbteilung();
 
-  private void setBoardMember(String boardMember) {
-    if (boardMember.equals("Ja")) {
-      rBtnIsBoardMember.setSelected(true);
-    } else {
-      rBtnIsNotBoardMember.setSelected(true);
+    for (String[] department : departments) {
+      if (department[5].equals(memberID)) {
+        String departmentName = department[1];
+
+        if (departmentName.equals("Bogen")) {
+          chcBoxBowDepartment.setSelected(true);
+        } else if (departmentName.equals("Luftdruck")) {
+          chcBoxAtmosphericDepartment.setSelected(true);
+        } else if (departmentName.equals("Feuerwaffen")) {
+          chcBoxFirearmDepartment.setSelected(true);
+        } else {
+          System.out.println("Nothing");
+        }
+
+        lDiscounts.setText("rabatte: " + department[4]);
+      }
     }
   }
 
@@ -154,17 +171,15 @@ public class MemberEditForm extends MemberFormMockup {
     tmData.setValueAt(member.dateOfBirth, row, 2);
     tmData.setValueAt(member.iban, row, 3);
     tmData.setValueAt(member.sex, row, 4);
-    tmData.setValueAt(member.disabilities, row, 5);
-    tmData.setValueAt(isBoardMember, row, 6);
-    tmData.setValueAt(member.entranceDate, row, 7);
-    tmData.setValueAt(member.leavingDate, row, 8);
-    tmData.setValueAt(member.notes, row, 9);
+    tmData.setValueAt(isBoardMember, row, 5);
+    tmData.setValueAt(member.entranceDate, row, 6);
+    tmData.setValueAt(member.leavingDate, row, 7);
   }
 
   @Override
   protected void btnConfirm_ActionPerformed(ActionEvent evt) {
     if (!isAllRequiredTxtFieldsFilled()) {
-      showWarningMsg("Sie müssen alle erforderliche Felder ausfüllen.");
+      msgDialog.showWarningMsg(this, "Sie müssen alle erforderliche Felder ausfüllen.");
     } else {
       Member member = getMembersData();
       insertMembersDataToTable(member);
@@ -173,10 +188,23 @@ public class MemberEditForm extends MemberFormMockup {
       String memberID = ids.first;
       String addressID = ids.second;
 
-      db.updateMitglieder(member, Integer.valueOf(memberID));
+      db.updateMitglieder(member, (int) Integer.valueOf(memberID));
 
       Address address = getAddressData();
       db.updateAdresse(address, (int) Integer.valueOf(addressID));
+
+      JCheckBox[] chcBoxDepartments = {
+        chcBoxBowDepartment, chcBoxAtmosphericDepartment,
+        chcBoxFirearmDepartment
+      };
+
+      for (JCheckBox chcBoxDepartment : chcBoxDepartments) {
+        Department department = getDepartmentData(chcBoxDepartment);
+
+        if (department != null) {
+          db.updateAbteilung(department, (int) Integer.valueOf(memberID));
+        }
+      }
     }
   }
 }
