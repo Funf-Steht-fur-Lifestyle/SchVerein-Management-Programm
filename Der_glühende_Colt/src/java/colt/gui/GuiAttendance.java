@@ -13,7 +13,7 @@ import colt.*;
 
 /**
  * GuiAttendance - a simple class that is responsible for
- * handling GUI attendance screen.
+ * handling the GUI attendance screen.
  *
  * @version 1.0 vom 30.03.2021
  * @author David Stuirbrink, Naglis Vidziunas
@@ -38,7 +38,6 @@ public class GuiAttendance extends JFrame {
   private DefaultTableModel tableAttendanceModel = (DefaultTableModel) tableAttendance.getModel();
   private JScrollPane tableAttendanceScrollPane = new JScrollPane(tableAttendance);
   private JButton btnControl = new JButton();
-  private JButton btnScale = new JButton();
   private JLabel lbDate = new JLabel();
 
   public GuiAttendance() { 
@@ -51,7 +50,7 @@ public class GuiAttendance extends JFrame {
     int x = (d.width - getSize().width) / 2;
     int y = (d.height - getSize().height) / 2;
     setLocation(x, y);
-    setTitle("Anwesenheit Schützenverein");
+    setTitle("Anwesenheit SchÃ¼tzenverein");
     setResizable(false);
     Container cp = getContentPane();
     cp.setLayout(null);
@@ -83,15 +82,6 @@ public class GuiAttendance extends JFrame {
     });
     btnControl.setFont(new Font("Dialog", Font.BOLD, 16));
     cp.add(btnControl);
-    btnScale.setBounds(622, 359, 75, 25);
-    btnScale.setText("Vergrößern");
-    btnScale.setMargin(new Insets(2, 2, 2, 2));
-    btnScale.addActionListener(new ActionListener() { 
-      public void actionPerformed(ActionEvent evt) { 
-        btnScale_ActionPerformed(evt);
-      }
-    });
-    cp.add(btnScale);
     lbDate.setBounds(572, 5, 110, 23);
     lbDate.setText(currentDate.toString());
     lbDate.setFont(new Font("Dialog", Font.BOLD, 16));
@@ -134,11 +124,5 @@ public class GuiAttendance extends JFrame {
     AttendanceMarker attendanceMarker = new AttendanceMarker(tableAttendanceModel, tableAttendance);
     attendanceMarker.markAsAttended();
   }
-
-  public void btnScale_ActionPerformed(ActionEvent evt) {
-    // TODO hier Quelltext einfügen
-
-  } // end of btnScale_ActionPerformed
-
 }
 

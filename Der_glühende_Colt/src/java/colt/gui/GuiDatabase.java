@@ -31,7 +31,6 @@ public class GuiDatabase extends JFrame {
   protected JTable tData = new JTable(0, 8);
   private DefaultTableModel tmData = (DefaultTableModel) tData.getModel();
   private JScrollPane tspScrollPane = new JScrollPane(tData);
-  private JButton btnScale = new JButton();
   private JButton btnAttendance = new JButton();
   private Database db = new Database();
 
@@ -45,14 +44,15 @@ public class GuiDatabase extends JFrame {
     int x = (d.width - getSize().width) / 2;
     int y = (d.height - getSize().height) / 2;
     setLocation(x, y);
-    setTitle("Home Schützenverein");
-    setResizable(true);
+    setTitle("Startseite SchÃ¼tzenverein");
+    setResizable(false);
     Container cp = getContentPane();
     cp.setLayout(null);
     LocalDate currentDate = LocalDate.now();
 
+    // create and initiate all components
     lbHead.setBounds(32, 24, 400, 28);
-    lbHead.setText("Schützenverein der glühende Colt");
+    lbHead.setText("SchÃ¼tzenverein der glÃ¼hende Colt");
     lbHead.setFont(new Font("Arial", Font.BOLD, 20));
     cp.add(lbHead);
     jLabel1.setBounds(-88, -104, 110, 20);
@@ -63,7 +63,7 @@ public class GuiDatabase extends JFrame {
     lbDatum.setFont(new Font("Dialog", Font.BOLD, 14));
     cp.add(lbDatum);
     btnAdd.setBounds(550, 135, 100, 25);
-    btnAdd.setText("Hinzufügen");
+    btnAdd.setText("HinzufÃ¼gen");
     btnAdd.setMargin(new Insets(2, 2, 2, 2));
     btnAdd.addActionListener(new ActionListener() { 
       public void actionPerformed(ActionEvent evt) { 
@@ -72,7 +72,7 @@ public class GuiDatabase extends JFrame {
     });
     cp.add(btnAdd);
     btnDelete.setBounds(654, 135, 100, 25);
-    btnDelete.setText("Löschen");
+    btnDelete.setText("LÃ¶schen");
     btnDelete.setMargin(new Insets(2, 2, 2, 2));
     btnDelete.addActionListener(new ActionListener() { 
       public void actionPerformed(ActionEvent evt) { 
@@ -101,15 +101,6 @@ public class GuiDatabase extends JFrame {
     tData.getColumnModel().getColumn(6).setHeaderValue("Eintrittsdatum");
     tData.getColumnModel().getColumn(7).setHeaderValue("Austrittsdatum");
     cp.add(tspScrollPane);
-    btnScale.setBounds(935, 632, 100, 25);
-    btnScale.setText("Vergrößern");
-    btnScale.setMargin(new Insets(2, 2, 2, 2));
-    btnScale.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent evt) {
-          btnScale_ActionPerformed(evt);
-      }
-    });
-    cp.add(btnScale);
     btnAttendance.setBounds(41, 119, 155, 41);
     btnAttendance.setText("Anwesenheit");
     btnAttendance.setMargin(new Insets(2, 2, 2, 2));
@@ -122,10 +113,13 @@ public class GuiDatabase extends JFrame {
 
     setTablesData();
 
+    // track which table entry was clicked
     tData.addMouseListener(new MouseAdapter() {
     @Override
-      public void mouseClicked(MouseEvent evt) {
-        MemberEditForm editForm = new MemberEditForm(tData, tmData);
+      public void mousePressed(MouseEvent evt) {
+        if (evt.getClickCount() == 2 && tData.getSelectedRow() != -1) {
+            MemberEditForm editForm = new MemberEditForm(tData, tmData);
+        }
       }
     });
 
@@ -135,6 +129,7 @@ public class GuiDatabase extends JFrame {
     setVisible(true);
   }
 
+  // put the needed data into the Table
   private void setTablesData() {
     ArrayList<String[]> members = db.selectAllMitglieder();
     String isBoardMember = "Nein";
@@ -154,26 +149,27 @@ public class GuiDatabase extends JFrame {
       boolean inFirearmDepartment = false;
 
       for (String[] department : departments) {
-        if (member[0].equals(department[5])) {
+        if (member[0].equals(department[5]) && department[6].equals("0")) {
           if (department[1].equals("Bogen")) {
             inBowDepartment = true;
-          } else if (department[1].equals("Luftdruck")) {
+          } else if (department[1].equals("Luftdruck") && department[6].equals("0")) {
             inAtmosphericDepartment = true;
-          } else if (department[1].equals("Feuerwaffen")) {
+          } else if (department[1].equals("Feuerwaffen") && department[6].equals("0")) {
             inFirearmDepartment = true;
           } else {
-            System.out.println("Nothin");
+            System.out.println("Nichts");
           }
         }
       }
 
       tmData.addRow(new Object[]{
         member[1], member[2], member[3], member[4], member[5],
-        isBoardMember, member[8], member[9]//, member[10]
+        isBoardMember, member[8], member[9]
       });
     }
   }
 
+  // track if the Add button was clicked
   public void btnAdd_ActionPerformed(ActionEvent evt) {
     MemberAdditionForm addForm = new MemberAdditionForm(tmData);
   }
@@ -183,11 +179,12 @@ public class GuiDatabase extends JFrame {
 
     for (String[] department : departments) {
       if (department[5].equals(memberID)) {
-        db.deleteAbteilung((int) Integer.valueOf(department[0]));
+        db.deleteAbteilung(department[1], (int) Integer.valueOf(memberID), 1);
       }
     }
   }
 
+  // track if the Delete button was clicked
   public void btnDelete_ActionPerformed(ActionEvent evt) {
     int row = tData.getSelectedRow();
     String firstName = tmData.getValueAt(row, 0).toString();
@@ -208,6 +205,7 @@ public class GuiDatabase extends JFrame {
 
   int searchedTimes = 0;
 
+  // track if the Search button was clicked
   public void bSuchen_ActionPerformed(ActionEvent evt) {
     MemberSearcher searcher = new MemberSearcher(tmData);
     searcher.search(tfSearch);
@@ -223,10 +221,6 @@ public class GuiDatabase extends JFrame {
 
       searchedTimes = 0;
     }
-  }
-
-  public void btnScale_ActionPerformed(ActionEvent evt) {
-    // Skalieren der Gui
   }
 
   public void btnAttendance_ActionPerformed(ActionEvent evt) {

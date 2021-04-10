@@ -42,6 +42,7 @@ public class MemberSearcher {
     return false;
   }
 
+  // search for specific member
   public void search(JTextField tfSearch) {
     int rows = tmData.getRowCount();
 
@@ -69,11 +70,11 @@ public class MemberSearcher {
             }
 
             if (value.equals(keyword) && !contains) {
-              String isBoardMember = (value.equals("1")) ? "Ja" : "Nein";
+              String isBoardMember = (member[7].equals("1")) ? "Ja" : "Nein";
 
               tmData.addRow(new Object[]{
                 member[1], member[2], member[3], member[4], member[5],
-                member[6], isBoardMember, member[8], member[9], member[10]
+                isBoardMember, member[8], member[9]
               });
             }
           }

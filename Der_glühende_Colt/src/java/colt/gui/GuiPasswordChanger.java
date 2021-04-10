@@ -47,7 +47,8 @@ public class GuiPasswordChanger extends JFrame {
     Container cp = getContentPane();
     cp.setLayout(null);
 
-    lbHead.setBounds(80, 0, 500, 33);
+    // create and initiate all components
+    lbHead.setBounds(140, 0, 500, 33);
     lbHead.setText("Schützenverein Der glühende Colt");
     lbHead.setFont(new Font("Arial Narrow", Font.BOLD, 24));
     cp.add(lbHead);
@@ -82,6 +83,7 @@ public class GuiPasswordChanger extends JFrame {
     setVisible(true);
   }
 
+  // track if the Password Change Button was clicked
   @SuppressWarnings("deprecation")
   public void btnChange_ActionPerformed(ActionEvent evt) {
     String oldPassword = pwdFieldOldPassword.getText();
@@ -99,7 +101,7 @@ public class GuiPasswordChanger extends JFrame {
       if (oldPasswordsEqual) {
         String hashedNewPassword = passHashing.hash(newPassword);
         db.updateUserInfo(hashedNewPassword, (int) Integer.valueOf(userID));
-        msgDialog.showInfoMsg(this, "Das Passwort ist geändert.");
+        msgDialog.showInfoMsg(this, "Das Passwort wurde geändert.");
       } else {
         msgDialog.showWarningMsg(this, "Das Passwort ist falsch.");
       }

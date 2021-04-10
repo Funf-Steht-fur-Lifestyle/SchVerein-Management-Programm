@@ -1,3 +1,10 @@
+/**
+ * Frame - a class that is responsible for
+ * creating the actual Frame and run the Software 
+ *
+ * @version 1.0 from 27.03.2021
+ * @author David Stuirbrink
+ */
 package colt.gui;
 
 import java.util.*;

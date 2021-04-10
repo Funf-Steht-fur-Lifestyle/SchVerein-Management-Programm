@@ -19,9 +19,10 @@ import colt.models.*;
  * classes MemberAdditionForm and MemberEditForm.
  *
  * @version 1.0 from 06.04.2021
- * @author Naglis Vidziunas
+ * @author Naglis Vidziunas, David Stuirbrink
  */
 public class MemberFormMockup extends JFrame {
+  // create and initiate all components
   protected DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
   protected JTextField txtFieldFirstName = new JTextField();
   protected JTextField txtFieldLastName = new JTextField();
@@ -36,7 +37,7 @@ public class MemberFormMockup extends JFrame {
   protected JTextField txtFieldLocation = new JTextField();
   protected JTextField txtFieldCountry = new JTextField();
   protected JTextField txtFieldState = new JTextField();
-  protected String[] sexType = {"maennlich", "weiblich", "diverse"};
+  protected String[] sexType = {"maennlich", "weiblich", "divers"};
   protected String[] isBoardMember = {"Ja", "Nein"};
   protected JComboBox<String> comBoxSexSelection = new JComboBox<String>(sexType);
   protected JComboBox<String> comBoxBoardMember = new JComboBox<String>(isBoardMember);
@@ -65,12 +66,14 @@ public class MemberFormMockup extends JFrame {
     JPanel eastPanel = initEastPanel();
     JPanel southPanel = initSouthPanel();
 
+    // tracks if the Confirm button is clicked
     btnConfirm.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent evt) {
         btnConfirm_ActionPerformed(evt);
       }
     });
 
+    // tracks if the Cancel button is clicked
     btnCancel.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent evt) {
         dispose();
@@ -80,6 +83,7 @@ public class MemberFormMockup extends JFrame {
     allowOnlyNumbers(txtFieldHouseNumber);
     allowOnlyNumbers(txtFieldPostcode);
 
+    // configures the Panel
     JPanel topPanel = new JPanel();
     topPanel.setLayout(new BorderLayout(gapSize, gapSize));
 
@@ -103,6 +107,7 @@ public class MemberFormMockup extends JFrame {
     setVisible(true);
   }
 
+  // initiates the West Panel
   private JPanel initWestPanel() {
     JPanel westPanel = new JPanel(new GridLayout(0, 2, gapSize, gapSize));
 
@@ -128,6 +133,7 @@ public class MemberFormMockup extends JFrame {
     return westPanel;
   }
 
+  // initiates the Center Panel
   private JPanel initCenterPanel() {
     JPanel centerPanel = new JPanel(new GridLayout(0, 2, gapSize, gapSize));
 
@@ -145,6 +151,7 @@ public class MemberFormMockup extends JFrame {
     return centerPanel;
   }
 
+  // initiates the East Panel
   private JPanel initEastPanel() {
     JPanel eastPanel = new JPanel(new GridLayout(0, 2, gapSize, gapSize));
 
@@ -168,18 +175,27 @@ public class MemberFormMockup extends JFrame {
     return eastPanel;
   }
 
+  // initiates the South Panel
   private JPanel initSouthPanel() {
     JPanel southPanel = new JPanel(new GridLayout(0, 2, gapSize, gapSize));
     JPanel disabilitiesPanel = new JPanel(new GridLayout(0, 1, gapSize, gapSize));
     JPanel notesPanel = new JPanel(new GridLayout(0, 1, gapSize, gapSize));
 
     txtAreaDisabilities.setRows(10);
-    txtAreaNotes.setRows(10);
-    disabilitiesPanel.add(txtAreaDisabilities);
+    txtAreaDisabilities.setLineWrap(true);
+    txtAreaDisabilities.setWrapStyleWord(true);
+    JScrollPane sPaneDisabilities = new JScrollPane(txtAreaDisabilities);
+
+    disabilitiesPanel.add(sPaneDisabilities);
     TitledBorder disabilitiesBorder = new TitledBorder("Behinderungen");
     disabilitiesPanel.setBorder(disabilitiesBorder);
 
-    notesPanel.add(txtAreaNotes);
+    txtAreaNotes.setRows(10);
+    txtAreaNotes.setLineWrap(true);
+    txtAreaNotes.setWrapStyleWord(true);
+    JScrollPane sPaneNotes = new JScrollPane(txtAreaNotes);
+
+    notesPanel.add(sPaneNotes);
     TitledBorder notesBorder = new TitledBorder("Vermerke");
     notesPanel.setBorder(notesBorder);
 
@@ -190,6 +206,7 @@ public class MemberFormMockup extends JFrame {
     return southPanel;
   }
 
+  // determines the Cost for a department
   private int determineCost(JCheckBox chcBox) {
     int cost = 0;
     String departmentName = chcBox.getText();
@@ -201,7 +218,7 @@ public class MemberFormMockup extends JFrame {
     } else if (departmentName.equals("Feuerwaffen")) {
       cost = 15;
     } else {
-      System.out.println("Nothing");
+      System.out.println("Nichts");
     }
 
     return cost;
@@ -209,29 +226,25 @@ public class MemberFormMockup extends JFrame {
 
   int departmentsNumber = 0;
 
+  // get all the data for the departments
   protected Department getDepartmentData(JCheckBox chcBox) {
-    Department department = null;
-    boolean selectedDepartment = chcBox.isSelected();
-
     if (chcBox.isSelected()) {
       departmentsNumber++;
     }
 
     int discount = (departmentsNumber > 1) ? 18 : 0;
+    int cost = determineCost(chcBox);
 
-    if (selectedDepartment) {
-      int cost = determineCost(chcBox);
-
-      department = new Department.Builder()
-                                 .name(chcBox.getText())
-                                 .cost(cost)
-                                 .discount(discount)
-                                 .build();
-    }
+    Department department = new Department.Builder()
+                                          .name(chcBox.getText())
+                                          .cost(cost)
+                                          .discount(discount)
+                                          .build();
 
     return department;
   }
 
+  // get the member data from the database
   protected Member getMembersData() {
     String firstName = txtFieldFirstName.getText();
     String lastName = txtFieldLastName.getText();
@@ -284,6 +297,7 @@ public class MemberFormMockup extends JFrame {
     return address;
   }
 
+  // ensure that the user has filled all Fields
   protected boolean isAllRequiredTxtFieldsFilled() {
     JTextField[] txtFields = {
       txtFieldFirstName, txtFieldLastName,
@@ -302,6 +316,7 @@ public class MemberFormMockup extends JFrame {
     return true;
   }
 
+  // this method ensures that the user can only enter numbers
   private void allowOnlyNumbers(JTextField txtField) {
     txtField.addKeyListener(new KeyAdapter() {
       public void keyPressed(KeyEvent ke) {

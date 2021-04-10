@@ -13,7 +13,7 @@ import colt.*;
  * marking the attendance of members.
  *
  * @version 1.0 from 02.04.2021
- * @author Naglis Vidziunas
+ * @author Naglis Vidziunas, David Stuirbrink
  */
 public class AttendanceMarker {
   private DefaultTableModel tmAttendance;

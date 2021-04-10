@@ -42,13 +42,14 @@ public class GuiLogin extends JFrame {
     int x = (d.width - getSize().width) / 2;
     int y = (d.height - getSize().height) / 2;
     setLocation(x, y);
-    setTitle("Anmeldung Schützenverein");
+    setTitle("Anmeldung SchÃ¼tzenverein");
     setResizable(false);
     Container cp = getContentPane();
     cp.setLayout(null);
 
-    lbHead.setBounds(80, 0, 500, 33);
-    lbHead.setText("Schützenverein Der glühende Colt");
+    // create and initiate all components
+    lbHead.setBounds(140, 0, 500, 33);
+    lbHead.setText("SchÃ¼tzenverein Der glÃ¼hende Colt");
     lbHead.setFont(new Font("Arial Narrow", Font.BOLD, 24));
     cp.add(lbHead);
 
@@ -82,6 +83,7 @@ public class GuiLogin extends JFrame {
     setVisible(true);
   }
 
+  // track if the Login Button was clicked
   @SuppressWarnings("deprecation")
   public void btnLogin_ActionPerformed(ActionEvent evt) {
     String username = txtFieldUsername.getText();

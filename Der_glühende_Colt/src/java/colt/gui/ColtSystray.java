@@ -78,7 +78,7 @@ public class ColtSystray {
 
         if (dayDifference <= 7) {
           String fullName = member[1] + " " + member[2];
-          String msg = String.format("In %d Tagen %s wird ein Geburtstag haben!", dayDifference, fullName);
+          String msg = String.format("In %d Tagen hat %s Geburtstag!", dayDifference, fullName);
           trayIcon.displayMessage("Geburtstag Erinnerung", msg, TrayIcon.MessageType.INFO);
         }
       }

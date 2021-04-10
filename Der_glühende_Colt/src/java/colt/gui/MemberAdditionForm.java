@@ -13,10 +13,10 @@ import colt.*;
 import colt.models.*;
 
 /**
- * MemberAdditionForm - a class that represents a from in
+ * MemberAdditionForm - a class that represents a form in
  * GUI, where needed information has to be filled, such as
  * firstName, lastName, dateOfBirth, and so on. This class
- * is used for member addition in a GUI form.
+ * is used as member addition in a GUI form.
  *
  * @version 1.0 from 03.04.2021
  * @author Naglis Vidziunas
@@ -86,8 +86,10 @@ public class MemberAdditionForm extends MemberFormMockup {
       for (JCheckBox chcBoxDepartment : chcBoxDepartments) {
         Department department = getDepartmentData(chcBoxDepartment);
 
-        if (department != null)  {
-          db.insertAbteilung(department, memberID);
+        if (chcBoxDepartment.isSelected())  {
+          db.insertAbteilung(department, memberID, 0);
+        } else {
+          db.insertAbteilung(department, memberID, 1);
         }
       }
     }

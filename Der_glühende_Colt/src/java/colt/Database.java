@@ -7,10 +7,10 @@ import colt.models.*;
 
 /**
  * Database - a class that is responsible for storing data
- * in and getting data from database.
+ * in and getting data from the database.
  *
  * @version 1.0 from 02.04.2021
- * @author Naglis Vidziunas
+ * @author Naglis Vidziunas / David Stuirbrink
  */
 public class Database {
   public Connection connect() {
@@ -27,6 +27,7 @@ public class Database {
     return conn;
   }
 
+  // insert a new User
   public void insertUser(String username, String password) {
     String insertUserQuery = "INSERT INTO benutzer(benutzername,"
                            + " passwort) VALUES(?,?)";
@@ -43,6 +44,7 @@ public class Database {
     }
   }
 
+  // select the User from the database
   public ArrayList<String> selectUser() {
     String selectUserQuery = "SELECT * FROM benutzer";
     ArrayList<String> user = new ArrayList<String>();
@@ -64,6 +66,7 @@ public class Database {
     return user;
   }
 
+  // update the password of the Admin User
   public void updateUserInfo(String password, int id) {
     String updateUserInfoQuery = "UPDATE benutzer SET passwort = ? WHERE id = ?";
 
@@ -79,6 +82,7 @@ public class Database {
     }
   }
 
+  // insert a new entry of a new member
   public void insertMitglieder(Member member, int addressID) {
     String insertMitgliederQuery = "INSERT INTO mitglieder("
                                  + "vorname, nachname, geburtstag, IBAN,"
@@ -108,6 +112,7 @@ public class Database {
     }
   }
 
+  // get all members to show them in the Table
   public ArrayList<String[]> selectAllMitglieder() {
     String selectMitgliederQuery = "SELECT * FROM mitglieder";
     ArrayList<String[]> members = new ArrayList<String[]>();
@@ -134,6 +139,7 @@ public class Database {
     return members;
   }
 
+  // update a member entry
   public void updateMitglieder(Member member, int id) {
     String updateMitgliederQuery = "UPDATE mitglieder SET vorname = ?, nachname = ?,"
                                  + " geburtstag = ?, IBAN = ?, behinderungen = ?,"
@@ -161,6 +167,7 @@ public class Database {
     }
   }
 
+  // delete a member from the database
   public void deleteMitglieder(int id) {
     String deleteMitgliederQuery = "DELETE FROM mitglieder WHERE mitgliedernummer = ?";
 
@@ -175,11 +182,12 @@ public class Database {
     }
   }
 
-  public void insertAbteilung(Department department, int memberID) {
+  // insert a new department
+  public void insertAbteilung(Department department, int memberID, int delete) {
     String insertAbteilungQuery = "INSERT INTO abteilung("
                                  + "abteilungsname, abteilungsleiter, gebuehren,"
-                                 + " rabatte, mitgliedernummer)"
-                                 + " VALUES(?,?,?,?,?)";
+                                 + " rabatte, mitgliedernummer, geloescht)"
+                                 + " VALUES(?,?,?,?,?,?)";
 
     try {
       Connection conn = connect();
@@ -190,12 +198,14 @@ public class Database {
       pStatement.setInt(3, department.cost);
       pStatement.setInt(4, department.discount);
       pStatement.setInt(5, memberID);
+      pStatement.setInt(6, delete);
       pStatement.executeUpdate();
     } catch (SQLException e) {
       System.out.println(e.getMessage());
     }
   }
 
+  // select all departments
   public ArrayList<String[]> selectAllAbteilung() {
     String selectAbteilungQuery = "SELECT * FROM abteilung";
     ArrayList<String[]> departments = new ArrayList<String[]>();
@@ -222,49 +232,53 @@ public class Database {
     return departments;
   }
 
-  public void updateAbteilung(Department department, int memberID) {
-    String updateAbteilungQuery = "UPDATE abteilung SET abteilungsname = ?,"
-                                 + " abteilungsleiter = ?, gebuehren = ?, rabatte = ?"
-                                 + " WHERE mitgliedernummer = ?";
+  // update a department in the database
+  public void updateAbteilung(Department department, int memberID, int delete) {
+    String updateAbteilungQuery = "UPDATE abteilung SET rabatte = ?, geloescht = ?"
+                                 + " WHERE mitgliedernummer = ? AND abteilungsname = ?";
 
     try {
       Connection conn = connect();
       PreparedStatement pStatement = conn.prepareStatement(updateAbteilungQuery);
 
-      pStatement.setString(1, department.name);
-      pStatement.setInt(2, department.manager);
-      pStatement.setInt(3, department.cost);
-      pStatement.setInt(4, department.discount);
-      pStatement.setInt(5, memberID);
+      pStatement.setInt(1, department.discount);
+      pStatement.setInt(2, delete);
+      pStatement.setInt(3, memberID);
+      pStatement.setString(4, department.name);
       pStatement.executeUpdate();
     } catch (SQLException e) {
       System.out.println(e.getMessage());
     }
   }
 
-  public void deleteAbteilung(int id) {
-    String deleteAbteilungQuery = "DELETE FROM abteilung WHERE abteilungsNummer = ?";
+  // delete a department from the database
+  public void deleteAbteilung(String department, int memberID, int delete) {
+    String deleteAbteilungQuery = "UPDATE abteilung SET geloescht = ?"
+                                + " WHERE abteilungsname = ? AND mitgliedernummer = ?";
 
     try {
       Connection conn = connect();
       PreparedStatement pStatement = conn.prepareStatement(deleteAbteilungQuery);
 
-      pStatement.setInt(1, id);
+      pStatement.setInt(1, delete);
+      pStatement.setString(2, department);
+      pStatement.setInt(3, memberID);
       pStatement.executeUpdate();
     } catch (SQLException e) {
       System.out.println(e.getMessage());
     }
   }
 
+  // insert a new address into the database
   public void insertAdresse(Address address) {
-    String insertMitgliederQuery = "INSERT INTO adresse("
+    String insertAdresseQuery = "INSERT INTO adresse("
                                  + "Strasse, HN, HNZusatz, PLZ,"
                                  + " Ort, Land, Bundesland)"
                                  + " VALUES(?,?,?,?,?,?,?)";
 
     try {
       Connection conn = connect();
-      PreparedStatement pStatement = conn.prepareStatement(insertMitgliederQuery);
+      PreparedStatement pStatement = conn.prepareStatement(insertAdresseQuery);
 
       pStatement.setString(1, address.street);
       pStatement.setInt(2, address.houseNumber);
@@ -279,14 +293,15 @@ public class Database {
     }
   }
 
+  // select all addresses from the database
   public ArrayList<String[]> selectAllAdresse() {
-    String selectMitgliederQuery = "SELECT * FROM adresse";
+    String selectAdresseQuery = "SELECT * FROM adresse";
     ArrayList<String[]> addresses = new ArrayList<String[]>();
 
     try {
       Connection conn = connect();
       Statement statement = conn.createStatement();
-      ResultSet rs = statement.executeQuery(selectMitgliederQuery);
+      ResultSet rs = statement.executeQuery(selectAdresseQuery);
 
       int columnNumber = rs.getMetaData().getColumnCount();
 
@@ -307,14 +322,15 @@ public class Database {
     return addresses;
   }
 
+  // update an adress entry
   public void updateAdresse(Address address, int addressID) {
-    String updateMitgliederQuery = "UPDATE adresse SET Strasse = ?, HN = ?,"
+    String updateAdresseQuery = "UPDATE adresse SET Strasse = ?, HN = ?,"
                                  + " HNZusatz = ?, PLZ = ?, Ort = ?, Land = ?,"
                                  + " Bundesland = ? WHERE adresseID = ?";
 
     try {
       Connection conn = connect();
-      PreparedStatement pStatement = conn.prepareStatement(updateMitgliederQuery);
+      PreparedStatement pStatement = conn.prepareStatement(updateAdresseQuery);
 
       pStatement.setString(1, address.street);
       pStatement.setInt(2, address.houseNumber);
@@ -330,6 +346,7 @@ public class Database {
     }
   }
 
+  // delete an adress from the database
   public void deleteAdresse(int id) {
     String deleteAdresseQuery = "DELETE FROM adresse WHERE adresseID = ?";
 
@@ -360,6 +377,7 @@ public class Database {
     }
   }
 
+  // select all members to mark their attendance
   public ArrayList<String[]> selectAllPresent() {
     String selectPresentQuery = "SELECT * FROM anwesenheit";
     ArrayList<String[]> presentMembers = new ArrayList<String[]>();

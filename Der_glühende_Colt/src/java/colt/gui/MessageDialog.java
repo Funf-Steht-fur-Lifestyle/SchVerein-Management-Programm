@@ -9,7 +9,7 @@ import javax.swing.*;
  * display information for the user.
  *
  * @version 1.0 from 06.04.2021
- * @author Naglis Vidziunas
+ * @author Naglis Vidziunas, David Stuirbrink
  */
 public class MessageDialog extends JOptionPane {
   public void showWarningMsg(Component comp, String msg) {

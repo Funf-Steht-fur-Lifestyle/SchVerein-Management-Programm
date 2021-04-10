@@ -17,7 +17,7 @@ import colt.models.*;
  * form.
  *
  * @version 1.0 from 03.04.2021
- * @author Naglis Vidziunas
+ * @author Naglis Vidziunas, David Stuirbrink 
  */
 public class MemberEditForm extends MemberFormMockup {
   private int row;
@@ -25,6 +25,9 @@ public class MemberEditForm extends MemberFormMockup {
   private DefaultTableModel tmData;
   private Database db = new Database();
   private MessageDialog msgDialog = new MessageDialog();
+  private boolean isBowDepartmentSelected = false;
+  private boolean isAtmosphericDepartmentSelected = false;
+  private boolean isFirearmDepartmentSelected = false;
 
   public MemberEditForm(JTable tData, DefaultTableModel tmData) {
     setTitle("Bearbeiten");
@@ -36,6 +39,10 @@ public class MemberEditForm extends MemberFormMockup {
     setMemberDataToTxtFields();
     setAddressDataToTxtFields();
     setDepartments();
+
+    isBowDepartmentSelected = (chcBoxBowDepartment.isSelected()) ? true : false;
+    isAtmosphericDepartmentSelected = (chcBoxAtmosphericDepartment.isSelected()) ? true : false;
+    isFirearmDepartmentSelected = (chcBoxFirearmDepartment.isSelected()) ? true : false;
   }
 
   private void setMemberDataToTxtFields() {
@@ -142,14 +149,14 @@ public class MemberEditForm extends MemberFormMockup {
       if (department[5].equals(memberID)) {
         String departmentName = department[1];
 
-        if (departmentName.equals("Bogen")) {
+        if (departmentName.equals("Bogen") && department[6].equals("0")) {
           chcBoxBowDepartment.setSelected(true);
-        } else if (departmentName.equals("Luftdruck")) {
+        } else if (departmentName.equals("Luftdruck") && department[6].equals("0")) {
           chcBoxAtmosphericDepartment.setSelected(true);
-        } else if (departmentName.equals("Feuerwaffen")) {
+        } else if (departmentName.equals("Feuerwaffen") && department[6].equals("0")) {
           chcBoxFirearmDepartment.setSelected(true);
         } else {
-          System.out.println("Nothing");
+          System.out.println("Nichts");
         }
 
         lDiscounts.setText("rabatte: " + department[4]);
@@ -179,7 +186,7 @@ public class MemberEditForm extends MemberFormMockup {
   @Override
   protected void btnConfirm_ActionPerformed(ActionEvent evt) {
     if (!isAllRequiredTxtFieldsFilled()) {
-      msgDialog.showWarningMsg(this, "Sie müssen alle erforderliche Felder ausfüllen.");
+      msgDialog.showWarningMsg(this, "Sie müssen alle erforderlichen Felder ausfüllen.");
     } else {
       Member member = getMembersData();
       insertMembersDataToTable(member);
@@ -198,11 +205,21 @@ public class MemberEditForm extends MemberFormMockup {
         chcBoxFirearmDepartment
       };
 
+      int departmentNumber = 0;
+
       for (JCheckBox chcBoxDepartment : chcBoxDepartments) {
         Department department = getDepartmentData(chcBoxDepartment);
 
-        if (department != null) {
-          db.updateAbteilung(department, (int) Integer.valueOf(memberID));
+        if (chcBoxDepartment.isSelected()) {
+          departmentNumber++;
+        }
+
+        department.discount = (departmentNumber > 1) ? 18 : 0;
+
+        if (chcBoxDepartment.isSelected()) {
+          db.updateAbteilung(department, (int) Integer.valueOf(memberID), 0);
+        } else {
+          db.deleteAbteilung(department.name, (int) Integer.valueOf(memberID), 1);
         }
       }
     }
