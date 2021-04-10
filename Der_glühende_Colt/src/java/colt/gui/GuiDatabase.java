@@ -28,7 +28,7 @@ public class GuiDatabase extends JFrame {
   private JButton btnDelete = new JButton();
   private JTextField tfSearch = new JTextField();
   private JButton btnSuchen = new JButton();
-  protected JTable tData = new JTable(0, 8);
+  protected JTable tData = new JTable(0, 9);
   private DefaultTableModel tmData = (DefaultTableModel) tData.getModel();
   private JScrollPane tspScrollPane = new JScrollPane(tData);
   private JButton btnAttendance = new JButton();
@@ -100,6 +100,7 @@ public class GuiDatabase extends JFrame {
     tData.getColumnModel().getColumn(5).setHeaderValue("Vorstandsmitglied");
     tData.getColumnModel().getColumn(6).setHeaderValue("Eintrittsdatum");
     tData.getColumnModel().getColumn(7).setHeaderValue("Austrittsdatum");
+    tData.getColumnModel().getColumn(8).setHeaderValue("MS berechtigt");
     cp.add(tspScrollPane);
     btnAttendance.setBounds(41, 119, 155, 41);
     btnAttendance.setText("Anwesenheit");
@@ -162,9 +163,12 @@ public class GuiDatabase extends JFrame {
         }
       }
 
+      boolean isEligible = eligibleForGunLicense((int) Integer.valueOf(member[9]));
+      String eligible = isEligible ? "Ja" : "Nein";
+
       tmData.addRow(new Object[]{
         member[1], member[2], member[3], member[4], member[5],
-        isBoardMember, member[8], member[9]
+        isBoardMember, member[8], member[9], eligible
       });
     }
   }
