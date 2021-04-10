@@ -226,4 +226,86 @@ public class GuiDatabase extends JFrame {
   public void btnAttendance_ActionPerformed(ActionEvent evt) {
       GuiAttendance attendanceScreen = new GuiAttendance(); 
   }
+
+  public boolean eligibleForGunLicense(int mitgliederID) // Waffenschein berechtigt?
+  {
+    //Seit mindestens einem Jahr Mitglied?
+    String eintrittsdatum = db.selectEintrittsdatum(mitgliederID);
+    LocalDate currentDate = LocalDate.now();
+
+    List<Integer> edSplit = Arrays.stream(eintrittsdatum.split("-"))
+        .map(Integer::parseInt)
+        .collect(Collectors.toList());
+
+    List<Integer> cdSplit = Arrays.stream(currentDate.toString().split("-"))
+        .map(Integer::parseInt)
+        .collect(Collectors.toList());
+
+    List<Integer> markerSplit = new ArrayList<Integer>(); //heute minus ein Jahr
+    markerSplit.add(cdSplit.get(0)-1);
+    markerSplit.add(cdSplit.get(1));
+    markerSplit.add(cdSplit.get(2));
+
+    if((int)edSplit.get(0)<(int)markerSplit.get(0))
+    {
+      System.out.println("Jahre älter");
+    }
+    else if(((int)edSplit.get(0) == (int)markerSplit.get(0))
+              &&((int)edSplit.get(1) < (int)markerSplit.get(1)) )
+    {
+      System.out.println("Monate Älter");
+    }
+    else if(((int)edSplit.get(0) == (int)markerSplit.get(0))
+              &&((int)edSplit.get(1) == (int)markerSplit.get(1)) 
+              &&((int)edSplit.get(2) <= (int)markerSplit.get(2) ))
+    {
+      System.out.println("tage älter");
+    }
+    else{
+      System.out.println("FALSE");
+      return false;
+    }
+
+    System.out.println("Trainingsnachweis Start");
+    // Trainingsnachweis: Hat 18 mal insgesamt oder 12 mal im Monat geschossen? 
+    ArrayList<String> attendance = db.selectAttendanceTimes(mitgliederID);
+    if(attendance.size()<12)
+    {
+      System.out.println("Size < 12");
+      return false;
+    }
+    if(attendance.size()>=18)
+    {
+      System.out.println("size > 18");
+      return true;
+    }
+    int counter = 0;
+    int month = (int)cdSplit.get(1);
+
+    for(String time : attendance )
+    {
+        String[] timeSplit = time.split("-");
+
+        if((int) Integer.valueOf(timeSplit[1]) == month){
+          counter++;
+        }
+
+        if(month!=1)
+        {
+          month--;
+        }
+        else{
+          month=12;
+        }
+    }
+
+    if(counter>=12)
+    {
+      System.out.println("12 Monate (oder mehr) regelmäßig");
+      return true;
+    }
+
+    System.out.println("Zwischen 12 und 18 Aber nicht in jedem Monat min. einmal");
+    return false;
+  }
 }
