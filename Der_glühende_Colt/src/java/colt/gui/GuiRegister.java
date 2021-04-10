@@ -45,7 +45,7 @@ public class GuiRegister extends GuiLRMockup {
 
   @Override
   @SuppressWarnings("deprecation")
-  public void btnRegister_ActionPerformed(ActionEvent evt) {
+  public void btnRegister_ActionPerformed(ActionEvent evt) { 
     String username = txtFieldUsername.getText();
     String password = pwdFieldPassword.getText();
 

@@ -3,7 +3,10 @@ package colt.gui;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
+import java.util.List;
+import java.util.stream.Collectors;
 
+//import javax.lang.model.util.ElementScanner14;
 import javax.swing.*;
 import javax.swing.event.*;
 import javax.swing.table.*;
@@ -29,7 +32,7 @@ public class GuiDatabase extends JFrame {
   private JButton btnDelete = new JButton();
   private JTextField tfSearch = new JTextField();
   private JButton btnSuchen = new JButton();
-  protected JTable tData = new JTable(0, 10);
+  protected JTable tData = new JTable(0, 11);
   private DefaultTableModel tmData = (DefaultTableModel) tData.getModel();
   private JScrollPane tspScrollPane = new JScrollPane(tData);
   private JButton btnScale = new JButton();
@@ -46,14 +49,14 @@ public class GuiDatabase extends JFrame {
     int x = (d.width - getSize().width) / 2;
     int y = (d.height - getSize().height) / 2;
     setLocation(x, y);
-    setTitle("Home Schützenverein");
+    setTitle("Home Schï¿½tzenverein");
     setResizable(false);
     Container cp = getContentPane();
     cp.setLayout(null);
     LocalDate currentDate = LocalDate.now();
-
+    
     lbHead.setBounds(32, 24, 400, 28);
-    lbHead.setText("Schützenverein der glühende Colt");
+    lbHead.setText("Schï¿½tzenverein der glï¿½hende Colt");
     lbHead.setFont(new Font("Arial", Font.BOLD, 20));
     cp.add(lbHead);
     jLabel1.setBounds(-88, -104, 110, 20);
@@ -73,7 +76,7 @@ public class GuiDatabase extends JFrame {
     });
     cp.add(btnEdit);
     btnAdd.setBounds(550, 135, 100, 25);
-    btnAdd.setText("Hinzufügen");
+    btnAdd.setText("Hinzufï¿½gen");
     btnAdd.setMargin(new Insets(2, 2, 2, 2));
     btnAdd.addActionListener(new ActionListener() { 
       public void actionPerformed(ActionEvent evt) { 
@@ -82,7 +85,7 @@ public class GuiDatabase extends JFrame {
     });
     cp.add(btnAdd);
     btnDelete.setBounds(654, 135, 100, 25);
-    btnDelete.setText("Löschen");
+    btnDelete.setText("Lï¿½schen");
     btnDelete.setMargin(new Insets(2, 2, 2, 2));
     btnDelete.addActionListener(new ActionListener() { 
       public void actionPerformed(ActionEvent evt) { 
@@ -112,9 +115,12 @@ public class GuiDatabase extends JFrame {
     tData.getColumnModel().getColumn(7).setHeaderValue("Eintrittsdatum");
     tData.getColumnModel().getColumn(8).setHeaderValue("Austrittsdatum");
     tData.getColumnModel().getColumn(9).setHeaderValue("Vermerke");
+    tData.getColumnModel().getColumn(10).setHeaderValue("WS berechtigt");
+
+
     cp.add(tspScrollPane);
     btnScale.setBounds(935, 632, 100, 25);
-    btnScale.setText("Vergrößern");
+    btnScale.setText("Vergrï¿½ï¿½ern");
     btnScale.setMargin(new Insets(2, 2, 2, 2));
     btnScale.addActionListener(new ActionListener() { 
       public void actionPerformed(ActionEvent evt) { 
@@ -148,10 +154,12 @@ public class GuiDatabase extends JFrame {
       if (member[7].equals("1")) {
         isBoardMember = "Ja";
       }
-
+      boolean eliglible = eligibleForGunLicense((int)Integer.parseInt(member[0]));
+      String question = eliglible ? "Ja" : "Nein";
+      
       tmData.addRow(new Object[]{
         member[1], member[2], member[3], member[4], member[5],
-        member[6], isBoardMember, member[8], member[9], member[10]
+        member[6], isBoardMember, member[8], member[9], member[10], question
       });
     }
   }
@@ -199,10 +207,93 @@ public class GuiDatabase extends JFrame {
 
   public void btnScale_ActionPerformed(ActionEvent evt) {
     // Skalieren der Gui
-    
   }
 
   public void btnAttendance_ActionPerformed(ActionEvent evt) {
       GuiAttendance attendanceScreen = new GuiAttendance(); 
   }
+
+  public boolean eligibleForGunLicense(int mitgliederID) // Waffenschein berechtigt?
+  {    
+    //Seit mindestens einem Jahr Mitglied?
+    String eintrittsdatum = db.selectEintrittsdatum(mitgliederID);
+    
+    LocalDate currentDate = LocalDate.now();
+    
+    List<Integer> edSplit = Arrays.stream(eintrittsdatum.split("-"))
+        .map(Integer::parseInt)
+        .collect(Collectors.toList());
+
+    List<Integer> cdSplit = Arrays.stream(currentDate.toString().split("-"))
+        .map(Integer::parseInt)
+        .collect(Collectors.toList());
+
+    List<Integer> markerSplit = new ArrayList<Integer>(); //heute minus ein Jahr
+    markerSplit.add(cdSplit.get(0)-1);
+    markerSplit.add(cdSplit.get(1));
+    markerSplit.add(cdSplit.get(2));
+    
+    if((int)edSplit.get(0)<(int)markerSplit.get(0))
+    {
+      System.out.println("Jahre Ã¤lter");
+    }
+    else if(((int)edSplit.get(0) == (int)markerSplit.get(0))
+              &&((int)edSplit.get(1) < (int)markerSplit.get(1)) )
+    {
+      System.out.println("Monate Ã„lter");
+    }
+    else if(((int)edSplit.get(0) == (int)markerSplit.get(0))
+              &&((int)edSplit.get(1) == (int)markerSplit.get(1)) 
+              &&((int)edSplit.get(2) <= (int)markerSplit.get(2) ))
+    {
+      System.out.println("tage Ã¤lter");
+    }
+    else{
+      System.out.println("FALSE");
+      return false;
+    }
+
+    System.out.println("Trainingsnachweis Start");
+    // Trainingsnachweis: Hat 18 mal insgesamt oder 12 mal im Monat geschossen? 
+    ArrayList<String> attendance = db.selectAttendanceTimes(mitgliederID);
+    if(attendance.size()<12)
+    {
+      System.out.println("Size < 12");
+      return false;
+    }
+    if(attendance.size()>=18)
+    {
+      System.out.println("size > 18");
+      return true;
+    }
+    int counter = 0;
+    int month = (int)cdSplit.get(1);
+
+    for(String time : attendance )
+    {
+        String[] timeSplit = time.split("-");
+        
+        if((int) Integer.valueOf(timeSplit[1]) == month){
+          counter++;
+        }
+
+        if(month!=1)
+        {
+          month--;
+        }
+        else{
+          month=12;
+        }
+    }
+
+    if(counter>=12)
+    {
+      System.out.println("12 Monate (oder mehr) regelmÃ¤ÃŸig");
+      return true;
+    }
+
+    System.out.println("Zwischen 12 und 18 Aber nicht in jedem Monat min. einmal");
+    return false;
+  }
+  
 }

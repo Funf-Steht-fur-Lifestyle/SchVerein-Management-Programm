@@ -326,4 +326,59 @@ public class Database {
       System.out.println(e.getMessage());
     }
   }
+  /**
+  * selectAttendanceTimes 
+  * Selects all the attendance times from a specific member
+  * (lets pray this works)
+  *
+  * @version 1.0 from 10.04.2021
+  * @author Eric Becker
+  */
+  public ArrayList<String> selectAttendanceTimes(int memberID) {
+    String selectMitgliederQuery = String.format("SELECT andatum FROM anwesenheit WHERE mitgliedernummer = %d", memberID);
+    ArrayList<String> members = new ArrayList<String>();
+    
+    try {
+      Connection conn = connect();
+      //PreparedStatement pStatement = conn.prepareStatement(selectMitgliederQuery);
+      
+      Statement statement = conn.createStatement();
+      ResultSet rs = statement.executeQuery(selectMitgliederQuery);  
+      //int columnNumber = rs.getMetaData().getColumnCount();
+
+      while (rs.next()) {
+          String member = "";
+          Object obj = rs.getObject(1);
+          member = (obj == null) ? null : obj.toString();
+          members.add(member);
+        }
+    } catch (SQLException e) {
+      System.out.println(e.getMessage());
+    }
+
+    return members;
+  }
+  public String selectEintrittsdatum(int memberID) {
+    String selectEintrittsdatumQuery = String.format("SELECT eintrittsdatum FROM mitglieder WHERE mitgliedernummer = %d;", memberID);
+    String date = "placeholder";
+    String result = "placeholder";
+
+    try {
+      Connection conn = connect();
+      //PreparedStatement pStatement = conn.prepareStatement(selectMitgliederQuery);
+      
+      Statement statement = conn.createStatement();
+      ResultSet rs = statement.executeQuery(selectEintrittsdatumQuery);  
+
+      rs.next();
+      Object obj = rs.getObject(1);
+      result = (obj == null) ? null : obj.toString();
+
+    } catch (SQLException e) {
+      System.out.println(e.getMessage());
+    }
+
+    return result;
+  }
+
 }
