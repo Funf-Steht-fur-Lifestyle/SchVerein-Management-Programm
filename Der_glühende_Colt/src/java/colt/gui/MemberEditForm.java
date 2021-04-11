@@ -186,7 +186,7 @@ public class MemberEditForm extends MemberFormMockup {
   @Override
   protected void btnConfirm_ActionPerformed(ActionEvent evt) {
     if (!isAllRequiredTxtFieldsFilled()) {
-      msgDialog.showWarningMsg(this, "Sie müssen alle erforderlichen Felder ausfüllen.");
+      msgDialog.showWarningMsg(this, "Sie muessen alle erforderlichen Felder ausfuellen.");
     } else {
       Member member = getMembersData();
       insertMembersDataToTable(member);

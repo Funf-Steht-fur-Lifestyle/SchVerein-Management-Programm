@@ -57,7 +57,7 @@ public class MemberFormMockup extends JFrame {
   private Database db = new Database();
 
   public MemberFormMockup() {
-    setTitle("Hinzufügen");
+    setTitle("Hinzufuegen");
     setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
     setLayout(new BorderLayout(gapSize, gapSize));
 
@@ -138,11 +138,11 @@ public class MemberFormMockup extends JFrame {
     JPanel centerPanel = new JPanel(new GridLayout(0, 2, gapSize, gapSize));
 
     centerPanel.add(chcBoxBowDepartment);
-    centerPanel.add(new JLabel("gebühren: 5"));
+    centerPanel.add(new JLabel("gebuehren: 5"));
     centerPanel.add(chcBoxAtmosphericDepartment);
-    centerPanel.add(new JLabel("gebühren: 10"));
+    centerPanel.add(new JLabel("gebuehren: 10"));
     centerPanel.add(chcBoxFirearmDepartment);
-    centerPanel.add(new JLabel("gebühren: 15"));
+    centerPanel.add(new JLabel("gebuehren: 15"));
 
     centerPanel.add(lDiscounts);
     TitledBorder border = new TitledBorder("Abteilungen");

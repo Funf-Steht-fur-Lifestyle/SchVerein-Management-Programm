@@ -42,14 +42,14 @@ public class GuiLogin extends JFrame {
     int x = (d.width - getSize().width) / 2;
     int y = (d.height - getSize().height) / 2;
     setLocation(x, y);
-    setTitle("Anmeldung Schützenverein");
+    setTitle("Anmeldung Schuetzenverein");
     setResizable(false);
     Container cp = getContentPane();
     cp.setLayout(null);
 
     // create and initiate all components
     lbHead.setBounds(140, 0, 500, 33);
-    lbHead.setText("Schützenverein Der glühende Colt");
+    lbHead.setText("Schuetzenverein Der gluehende Colt");
     lbHead.setFont(new Font("Arial Narrow", Font.BOLD, 24));
     cp.add(lbHead);
 

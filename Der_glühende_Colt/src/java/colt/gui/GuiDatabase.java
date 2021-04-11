@@ -45,7 +45,7 @@ public class GuiDatabase extends JFrame {
     int x = (d.width - getSize().width) / 2;
     int y = (d.height - getSize().height) / 2;
     setLocation(x, y);
-    setTitle("Startseite Schützenverein");
+    setTitle("Startseite Schuetzenverein");
     setResizable(false);
     Container cp = getContentPane();
     cp.setLayout(null);
@@ -53,7 +53,7 @@ public class GuiDatabase extends JFrame {
 
     // create and initiate all components
     lbHead.setBounds(32, 24, 400, 28);
-    lbHead.setText("Schützenverein der glühende Colt");
+    lbHead.setText("Schuetzenverein der gluehende Colt");
     lbHead.setFont(new Font("Arial", Font.BOLD, 20));
     cp.add(lbHead);
     jLabel1.setBounds(-88, -104, 110, 20);
@@ -64,7 +64,7 @@ public class GuiDatabase extends JFrame {
     lbDatum.setFont(new Font("Dialog", Font.BOLD, 14));
     cp.add(lbDatum);
     btnAdd.setBounds(550, 135, 100, 25);
-    btnAdd.setText("Hinzufügen");
+    btnAdd.setText("Hinzufuegen");
     btnAdd.setMargin(new Insets(2, 2, 2, 2));
     btnAdd.addActionListener(new ActionListener() { 
       public void actionPerformed(ActionEvent evt) { 
@@ -73,7 +73,7 @@ public class GuiDatabase extends JFrame {
     });
     cp.add(btnAdd);
     btnDelete.setBounds(654, 135, 100, 25);
-    btnDelete.setText("Löschen");
+    btnDelete.setText("Loeschen");
     btnDelete.setMargin(new Insets(2, 2, 2, 2));
     btnDelete.addActionListener(new ActionListener() { 
       public void actionPerformed(ActionEvent evt) { 
@@ -253,16 +253,16 @@ public class GuiDatabase extends JFrame {
     markerSplit.add(cdSplit.get(2));
 
     if((int)edSplit.get(0)<(int)markerSplit.get(0)) {
-      System.out.println("Jahre älter");
+      System.out.println("Jahre aelter");
     } else if(((int)edSplit.get(0) == (int)markerSplit.get(0))
               &&((int)edSplit.get(1) < (int)markerSplit.get(1)) )
     {
-      System.out.println("Monate Älter");
+      System.out.println("Monate aelter");
     } else if(((int)edSplit.get(0) == (int)markerSplit.get(0))
               &&((int)edSplit.get(1) == (int)markerSplit.get(1))
               &&((int)edSplit.get(2) <= (int)markerSplit.get(2)))
     {
-      System.out.println("tage älter");
+      System.out.println("tage aelter");
     } else {
       System.out.println("FALSE");
       return false;
@@ -297,7 +297,7 @@ public class GuiDatabase extends JFrame {
     }
 
     if (counter >= 12) {
-      System.out.println("12 Monate (oder mehr) regelmäßig");
+      System.out.println("12 Monate (oder mehr) regelmaeßig");
       return true;
     }
 

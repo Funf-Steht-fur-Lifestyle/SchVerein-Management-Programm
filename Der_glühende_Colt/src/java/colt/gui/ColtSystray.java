@@ -26,9 +26,9 @@ public class ColtSystray {
     PopupMenu popup = createPopup();
 
     try {
-      trayIcon = new TrayIcon(image, "Schützenverein", popup);
+      trayIcon = new TrayIcon(image, "Schuetzenverein", popup);
       trayIcon.setImageAutoSize(true);
-      trayIcon.setToolTip("Erinnerung Schützenverein");
+      trayIcon.setToolTip("Erinnerung Schuetzenverein");
       tray.add(trayIcon);
     } catch (AWTException e) {
       e.printStackTrace();
@@ -44,7 +44,7 @@ public class ColtSystray {
         System.exit(0);
       }
     });
-    MenuItem menuItemPasswordChanger = new MenuItem("Passwort ändern");
+    MenuItem menuItemPasswordChanger = new MenuItem("Passwort aendern");
     menuItemPasswordChanger.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent e) {

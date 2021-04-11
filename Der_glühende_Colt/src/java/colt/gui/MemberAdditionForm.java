@@ -27,8 +27,8 @@ public class MemberAdditionForm extends MemberFormMockup {
   private Database db = new Database();
 
   public MemberAdditionForm(DefaultTableModel tmData) {
-    setTitle("Hinzufügen");
-    btnConfirm.setText("Hinzufügen");
+    setTitle("Hinzufuegen");
+    btnConfirm.setText("Hinzufuegen");
     this.tmData = tmData;
   }
 
@@ -67,7 +67,7 @@ public class MemberAdditionForm extends MemberFormMockup {
   @Override
   protected void btnConfirm_ActionPerformed(ActionEvent evt) {
     if (!isAllRequiredTxtFieldsFilled()) {
-        msgDialog.showWarningMsg(this, "Sie müssen alle erforderliche Felder ausfüllen.");
+        msgDialog.showWarningMsg(this, "Sie muessen alle erforderliche Felder ausfuellen.");
     } else {
       Member member = getMembersData();
       insertMembersDataToTable(member);

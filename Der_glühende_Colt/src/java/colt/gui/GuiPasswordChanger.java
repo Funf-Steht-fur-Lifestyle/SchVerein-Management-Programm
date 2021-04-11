@@ -42,14 +42,14 @@ public class GuiPasswordChanger extends JFrame {
     int x = (d.width - getSize().width) / 2;
     int y = (d.height - getSize().height) / 2;
     setLocation(x, y);
-    setTitle("Passwort ändern Schützenverein");
+    setTitle("Passwort aendern Schuetzenverein");
     setResizable(false);
     Container cp = getContentPane();
     cp.setLayout(null);
 
     // create and initiate all components
     lbHead.setBounds(140, 0, 500, 33);
-    lbHead.setText("Schützenverein Der glühende Colt");
+    lbHead.setText("Schuetzenverein Der gluehende Colt");
     lbHead.setFont(new Font("Arial Narrow", Font.BOLD, 24));
     cp.add(lbHead);
 
@@ -70,7 +70,7 @@ public class GuiPasswordChanger extends JFrame {
     cp.add(pwdFieldNewPassword);
 
     btnChange.setBounds(200, 198, 180, 41);
-    btnChange.setText("Passwort ändern");
+    btnChange.setText("Passwort aendern");
     btnChange.setMargin(new Insets(2, 2, 2, 2));
     btnChange.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent evt) {
@@ -101,7 +101,7 @@ public class GuiPasswordChanger extends JFrame {
       if (oldPasswordsEqual) {
         String hashedNewPassword = passHashing.hash(newPassword);
         db.updateUserInfo(hashedNewPassword, (int) Integer.valueOf(userID));
-        msgDialog.showInfoMsg(this, "Das Passwort wurde geändert.");
+        msgDialog.showInfoMsg(this, "Das Passwort wurde geaendert.");
       } else {
         msgDialog.showWarningMsg(this, "Das Passwort ist falsch.");
       }
