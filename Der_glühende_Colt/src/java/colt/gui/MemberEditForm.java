@@ -57,7 +57,6 @@ public class MemberEditForm extends MemberFormMockup {
                         : tmData.getValueAt(row, 6).toString();
     String leavingDate = (tmData.getValueAt(row, 7) == null) ? ""
                        : tmData.getValueAt(row, 7).toString();
-    // String eligible = tmData.getValueAt(row, 8).toString();
 
     String notes = "";
     String disabilities = "";
@@ -76,8 +75,6 @@ public class MemberEditForm extends MemberFormMockup {
     txtFieldIBAN.setText(iban);
     comBoxSexSelection.setSelectedItem(sex);
     comBoxBoardMember.setSelectedItem(boardMember);
-    // comBoxEligibleForGunLicense.setEditable(false);
-    // comBoxEligibleForGunLicense.setSelectedItem(eligible);
     txtAreaDisabilities.setText(disabilities);
     txtFieldEntranceDate.setText(entranceDate);
     txtFieldLeavingDate.setText(leavingDate);

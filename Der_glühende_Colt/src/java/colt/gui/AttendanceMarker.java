@@ -26,32 +26,6 @@ public class AttendanceMarker {
     this.tAttendance = tAttendance;
   }
 
-  public ArrayList<String[]> getOverallAttendance() {
-    ArrayList<String[]> membersAttendance = new ArrayList<String[]>();
-    int row = tmAttendance.getRowCount();
-    int columnNumber = tmAttendance.getColumnCount();
-
-    for (int i = 0; i < row; i++) {
-      String fullName = tmAttendance.getValueAt(i, 0).toString();
-      ArrayList<String[]> members = db.selectAllMitglieder();
-      String[] attendedTimes = new String[columnNumber];
-
-      for (String[] member : members) {
-        String membersFullName = member[1] + " " + member[2];
-
-        if (membersFullName.equals(fullName)) {
-          for (int in = 0; in < columnNumber; in++) {
-            attendedTimes[in - 1] = tmAttendance.getValueAt(i, in).toString();
-          }
-        }
-      }
-
-      membersAttendance.add(attendedTimes);
-    }
-
-    return membersAttendance;
-  }
-
   private boolean alreadyMarked(String memberID, String currentDate) {
     ArrayList<String[]> presentMembers = db.selectAllPresent();
 

@@ -41,7 +41,6 @@ public class MemberFormMockup extends JFrame {
   protected String[] yesNoOption = {"Ja", "Nein"};
   protected JComboBox<String> comBoxSexSelection = new JComboBox<String>(sexType);
   protected JComboBox<String> comBoxBoardMember = new JComboBox<String>(yesNoOption);
-  // protected JComboBox<String> comBoxEligibleForGunLicense = new JComboBox<String>(yesNoOption);
   protected JCheckBox chcBoxBowDepartment = new JCheckBox("Bogen");
   protected JCheckBox chcBoxAtmosphericDepartment = new JCheckBox("Luftdruck");
   protected JCheckBox chcBoxFirearmDepartment = new JCheckBox("Feuerwaffen");
@@ -124,8 +123,6 @@ public class MemberFormMockup extends JFrame {
     westPanel.add(comBoxSexSelection);
     westPanel.add(new JLabel("Vorstandsmitglied"));
     westPanel.add(comBoxBoardMember);
-    // westPanel.add(new JLabel("Waffenschein berechtigt"));
-    // westPanel.add(comBoxEligibleForGunLicense);
     westPanel.add(new JLabel("eintrittsdatum"));
     westPanel.add(txtFieldEntranceDate);
     westPanel.add(new JLabel("austrittsdatum"));
