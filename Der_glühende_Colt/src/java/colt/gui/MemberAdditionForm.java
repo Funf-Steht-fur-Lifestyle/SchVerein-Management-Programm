@@ -35,6 +35,7 @@ public class MemberAdditionForm extends MemberFormMockup {
   @Override
   protected void insertMembersDataToTable(Member member) {
     String isBoardMember = "Nein";
+    String eligibleForGunLicense = "Nein";
 
     if (member.boardMember == 1) {
       isBoardMember = "Ja";
@@ -42,8 +43,8 @@ public class MemberAdditionForm extends MemberFormMockup {
 
     tmData.addRow(new Object[]{
       member.firstName, member.lastName, member.dateOfBirth,
-      member.iban, member.sex, isBoardMember,
-      member.entranceDate, member.leavingDate
+      member.iban, member.sex, isBoardMember, member.entranceDate,
+      member.leavingDate, eligibleForGunLicense
     });
   }
 

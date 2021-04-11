@@ -39,6 +39,8 @@ public class Database {
       pStatement.setString(1, username);
       pStatement.setString(2, password);
       pStatement.executeUpdate();
+
+      conn.close();
     } catch (SQLException e) {
       System.out.println(e.getMessage());
     }
@@ -59,6 +61,8 @@ public class Database {
         user.add(rs.getString(2));
         user.add(rs.getString(3));
       }
+
+      conn.close();
     } catch (SQLException e) {
       System.out.println(e.getMessage());
     }
@@ -77,6 +81,8 @@ public class Database {
       pStatement.setString(1, password);
       pStatement.setInt(2, id);
       pStatement.executeUpdate();
+
+      conn.close();
     } catch (SQLException e) {
       System.out.println(e.getMessage());
     }
@@ -107,6 +113,8 @@ public class Database {
       pStatement.setString(10, member.notes);
       pStatement.setInt(11, addressID);
       pStatement.executeUpdate();
+
+      conn.close();
     } catch (SQLException e) {
       System.out.println(e.getMessage());
     }
@@ -132,6 +140,8 @@ public class Database {
         }
         members.add(member);
       }
+
+      conn.close();
     } catch (SQLException e) {
       System.out.println(e.getMessage());
     }
@@ -162,6 +172,8 @@ public class Database {
       pStatement.setString(9, member.notes);
       pStatement.setInt(10, id);
       pStatement.executeUpdate();
+
+      conn.close();
     } catch (SQLException e) {
       System.out.println(e.getMessage());
     }
@@ -200,6 +212,8 @@ public class Database {
       pStatement.setInt(5, memberID);
       pStatement.setInt(6, delete);
       pStatement.executeUpdate();
+
+      conn.close();
     } catch (SQLException e) {
       System.out.println(e.getMessage());
     }
@@ -225,6 +239,8 @@ public class Database {
         }
         departments.add(department);
       }
+
+      conn.close();
     } catch (SQLException e) {
       System.out.println(e.getMessage());
     }
@@ -246,6 +262,8 @@ public class Database {
       pStatement.setInt(3, memberID);
       pStatement.setString(4, department.name);
       pStatement.executeUpdate();
+
+      conn.close();
     } catch (SQLException e) {
       System.out.println(e.getMessage());
     }
@@ -264,6 +282,8 @@ public class Database {
       pStatement.setString(2, department);
       pStatement.setInt(3, memberID);
       pStatement.executeUpdate();
+
+      conn.close();
     } catch (SQLException e) {
       System.out.println(e.getMessage());
     }
@@ -288,6 +308,8 @@ public class Database {
       pStatement.setString(6, address.country);
       pStatement.setString(7, address.state);
       pStatement.executeUpdate();
+
+      conn.close();
     } catch (SQLException e) {
       System.out.println(e.getMessage());
     }
@@ -315,6 +337,8 @@ public class Database {
 
         addresses.add(address);
       }
+
+      conn.close();
     } catch (SQLException e) {
       System.out.println(e.getMessage());
     }
@@ -341,6 +365,8 @@ public class Database {
       pStatement.setString(7, address.state);
       pStatement.setInt(8, addressID);
       pStatement.executeUpdate();
+
+      conn.close();
     } catch (SQLException e) {
       System.out.println(e.getMessage());
     }
@@ -356,6 +382,8 @@ public class Database {
 
       pStatement.setInt(1, id);
       pStatement.executeUpdate();
+
+      conn.close();
     } catch (SQLException e) {
       System.out.println(e.getMessage());
     }
@@ -372,6 +400,8 @@ public class Database {
       pStatement.setInt(1, memberID);
       pStatement.setString(2, date);
       pStatement.executeUpdate();
+
+      conn.close();
     } catch (SQLException e) {
       System.out.println(e.getMessage());
     }
@@ -397,6 +427,8 @@ public class Database {
         }
         presentMembers.add(presentMember);
       }
+
+      conn.close();
     } catch (SQLException e) {
       System.out.println(e.getMessage());
     }
@@ -404,37 +436,36 @@ public class Database {
     return presentMembers;
   }
 
-  public void deletePresent(int memberID, String date) {
-    String deletePresentQuery = "DELETE FROM anwesenheit WHERE mitgliedernummer = ? AND andatum = ?";
+  public void deletePresent(int memberID) {
+    String deletePresentQuery = "DELETE FROM anwesenheit WHERE mitgliedernummer = ?";
 
     try {
       Connection conn = connect();
       PreparedStatement pStatement = conn.prepareStatement(deletePresentQuery);
 
       pStatement.setInt(1, memberID);
-      pStatement.setString(2, date);
       pStatement.executeUpdate();
+
+      conn.close();
     } catch (SQLException e) {
       System.out.println(e.getMessage());
     }
   }
 
-
   /**
-   * selectAttendanceTimes
-   * Selects all the attendance times from a specific member
-   * (lets pray this works)
-   *
-   * @version 1.0 from 10.04.2021
-   * @author Eric Becker
-   */
+  * selectAttendanceTimes
+  * Selects all the attendance times from a specific member
+  * (lets pray this works)
+  *
+  * @version 1.0 from 10.04.2021
+  * @author Eric Becker
+  */
   public ArrayList<String> selectAttendanceTimes(int memberID) {
     String selectMitgliederQuery = String.format("SELECT andatum FROM anwesenheit WHERE mitgliedernummer = %d", memberID);
     ArrayList<String> members = new ArrayList<String>();
 
     try {
       Connection conn = connect();
-
       Statement statement = conn.createStatement();
       ResultSet rs = statement.executeQuery(selectMitgliederQuery);
 
@@ -444,6 +475,8 @@ public class Database {
         member = (obj == null) ? null : obj.toString();
         members.add(member);
       }
+
+      conn.close();
     } catch (SQLException e) {
       System.out.println(e.getMessage());
     }
@@ -464,62 +497,8 @@ public class Database {
       rs.next();
       Object obj = rs.getObject(1);
       result = (obj == null) ? null : obj.toString();
-    } catch (SQLException e) {
-      System.out.println(e.getMessage());
-    }
 
-    return result;
-  }
-
-  /**
-  * selectAttendanceTimes 
-  * Selects all the attendance times from a specific member
-  * (lets pray this works)
-  *
-  * @version 1.0 from 10.04.2021
-  * @author Eric Becker
-  */
-  public ArrayList<String> selectAttendanceTimes(int memberID) {
-    String selectMitgliederQuery = String.format("SELECT andatum FROM anwesenheit WHERE mitgliedernummer = %d", memberID);
-    ArrayList<String> members = new ArrayList<String>();
-
-    try {
-      Connection conn = connect();
-      //PreparedStatement pStatement = conn.prepareStatement(selectMitgliederQuery);
-
-      Statement statement = conn.createStatement();
-      ResultSet rs = statement.executeQuery(selectMitgliederQuery);  
-      //int columnNumber = rs.getMetaData().getColumnCount();
-
-      while (rs.next()) {
-          String member = "";
-          Object obj = rs.getObject(1);
-          member = (obj == null) ? null : obj.toString();
-          members.add(member);
-        }
-    } catch (SQLException e) {
-      System.out.println(e.getMessage());
-    }
-
-    return members;
-  }
-
-  public String selectEintrittsdatum(int memberID) {
-    String selectEintrittsdatumQuery = String.format("SELECT eintrittsdatum FROM mitglieder WHERE mitgliedernummer = %d;", memberID);
-    String date = "placeholder";
-    String result = "placeholder";
-
-    try {
-      Connection conn = connect();
-      //PreparedStatement pStatement = conn.prepareStatement(selectMitgliederQuery);
-
-      Statement statement = conn.createStatement();
-      ResultSet rs = statement.executeQuery(selectEintrittsdatumQuery);  
-
-      rs.next();
-      Object obj = rs.getObject(1);
-      result = (obj == null) ? null : obj.toString();
-
+      conn.close();
     } catch (SQLException e) {
       System.out.println(e.getMessage());
     }

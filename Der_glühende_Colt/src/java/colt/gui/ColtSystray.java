@@ -74,9 +74,9 @@ public class ColtSystray {
       for (String[] member : members) {
         LocalDate membersBirthday = LocalDate.parse(member[3]);
         LocalDate currentDate = LocalDate.now();
-        long dayDifference = Period.between(membersBirthday, currentDate).getDays();
+        long dayDifference = Period.between(currentDate, membersBirthday).getDays();
 
-        if (dayDifference <= 7) {
+        if (dayDifference <= 7 && dayDifference >= 0) {
           String fullName = member[1] + " " + member[2];
           String msg = String.format("In %d Tagen hat %s Geburtstag!", dayDifference, fullName);
           trayIcon.displayMessage("Geburtstag Erinnerung", msg, TrayIcon.MessageType.INFO);

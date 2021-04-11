@@ -3,6 +3,7 @@ package colt.gui;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
+import java.util.stream.*;
 
 import javax.swing.*;
 import javax.swing.event.*;
@@ -100,7 +101,7 @@ public class GuiDatabase extends JFrame {
     tData.getColumnModel().getColumn(5).setHeaderValue("Vorstandsmitglied");
     tData.getColumnModel().getColumn(6).setHeaderValue("Eintrittsdatum");
     tData.getColumnModel().getColumn(7).setHeaderValue("Austrittsdatum");
-    tData.getColumnModel().getColumn(8).setHeaderValue("MS berechtigt");
+    tData.getColumnModel().getColumn(8).setHeaderValue("WS berechtigt");
     cp.add(tspScrollPane);
     btnAttendance.setBounds(41, 119, 155, 41);
     btnAttendance.setText("Anwesenheit");
@@ -163,7 +164,7 @@ public class GuiDatabase extends JFrame {
         }
       }
 
-      boolean isEligible = eligibleForGunLicense((int) Integer.valueOf(member[9]));
+      boolean isEligible = eligibleForGunLicense((int) Integer.valueOf(member[0]));
       String eligible = isEligible ? "Ja" : "Nein";
 
       tmData.addRow(new Object[]{
@@ -201,6 +202,7 @@ public class GuiDatabase extends JFrame {
       if (member[1].equals(firstName) && member[2].equals(lastName)) {
         deleteDepartments(member[0]);
         db.deleteAdresse((int) Integer.valueOf(member[11]));
+        db.deletePresent((int) Integer.valueOf(member[0]));
         db.deleteMitglieder((int) Integer.valueOf(member[0]));
         tmData.removeRow(row);
       }
@@ -237,35 +239,31 @@ public class GuiDatabase extends JFrame {
     String eintrittsdatum = db.selectEintrittsdatum(mitgliederID);
     LocalDate currentDate = LocalDate.now();
 
-    List<Integer> edSplit = Arrays.stream(eintrittsdatum.split("-"))
+    java.util.List<Integer> edSplit = Arrays.stream(eintrittsdatum.split("-"))
         .map(Integer::parseInt)
         .collect(Collectors.toList());
 
-    List<Integer> cdSplit = Arrays.stream(currentDate.toString().split("-"))
+    java.util.List<Integer> cdSplit = Arrays.stream(currentDate.toString().split("-"))
         .map(Integer::parseInt)
         .collect(Collectors.toList());
 
-    List<Integer> markerSplit = new ArrayList<Integer>(); //heute minus ein Jahr
+    java.util.List<Integer> markerSplit = new ArrayList<Integer>(); //heute minus ein Jahr
     markerSplit.add(cdSplit.get(0)-1);
     markerSplit.add(cdSplit.get(1));
     markerSplit.add(cdSplit.get(2));
 
-    if((int)edSplit.get(0)<(int)markerSplit.get(0))
-    {
+    if((int)edSplit.get(0)<(int)markerSplit.get(0)) {
       System.out.println("Jahre älter");
-    }
-    else if(((int)edSplit.get(0) == (int)markerSplit.get(0))
+    } else if(((int)edSplit.get(0) == (int)markerSplit.get(0))
               &&((int)edSplit.get(1) < (int)markerSplit.get(1)) )
     {
       System.out.println("Monate Älter");
-    }
-    else if(((int)edSplit.get(0) == (int)markerSplit.get(0))
-              &&((int)edSplit.get(1) == (int)markerSplit.get(1)) 
-              &&((int)edSplit.get(2) <= (int)markerSplit.get(2) ))
+    } else if(((int)edSplit.get(0) == (int)markerSplit.get(0))
+              &&((int)edSplit.get(1) == (int)markerSplit.get(1))
+              &&((int)edSplit.get(2) <= (int)markerSplit.get(2)))
     {
       System.out.println("tage älter");
-    }
-    else{
+    } else {
       System.out.println("FALSE");
       return false;
     }
@@ -273,38 +271,32 @@ public class GuiDatabase extends JFrame {
     System.out.println("Trainingsnachweis Start");
     // Trainingsnachweis: Hat 18 mal insgesamt oder 12 mal im Monat geschossen? 
     ArrayList<String> attendance = db.selectAttendanceTimes(mitgliederID);
-    if(attendance.size()<12)
-    {
+    if (attendance.size() < 12) {
       System.out.println("Size < 12");
       return false;
     }
-    if(attendance.size()>=18)
-    {
+    if (attendance.size() >= 18) {
       System.out.println("size > 18");
       return true;
     }
     int counter = 0;
     int month = (int)cdSplit.get(1);
 
-    for(String time : attendance )
-    {
+    for (String time : attendance) {
         String[] timeSplit = time.split("-");
 
-        if((int) Integer.valueOf(timeSplit[1]) == month){
+        if ((int) Integer.valueOf(timeSplit[1]) == month) {
           counter++;
         }
 
-        if(month!=1)
-        {
+        if (month != 1) {
           month--;
-        }
-        else{
+        } else {
           month=12;
         }
     }
 
-    if(counter>=12)
-    {
+    if (counter >= 12) {
       System.out.println("12 Monate (oder mehr) regelmäßig");
       return true;
     }
